@@ -5,7 +5,7 @@ middle_name = {'test_carve_'};
 posx = 200.5;
 posy = 299.5;
 
-num = 1:2;
+num = 1:554;
 name = strcat(prefix_name,middle_name,num2str(num(1),'%04d'),'.h5');
 [data,domain] = getData(char(name),char('/Flbm_0'),2,true);
 Nx = domain.Nx;
@@ -23,6 +23,7 @@ for i = 1:numel(num)
     Flbmx = reshape(data(:,:,:,1),[Nx,Ny]);
     Flbmy = reshape(data(:,:,:,2),[Nx,Ny]);
     Flbm(i,1) = sum(sum(Flbmy));
+    Flbmxx(i,1) = sum(sum(Flbmx));
     [data,domain] = getData(char(name),char('/Velocity_0'),2,true);
     vx = reshape(data(:,:,:,1),[Nx,Ny]);
     vy = reshape(data(:,:,:,2),[Nx,Ny]);

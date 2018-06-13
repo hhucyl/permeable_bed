@@ -59,7 +59,7 @@ int main () try
     myUserData my_dat;
     dom.UserData = &my_dat;
     my_dat.u0 = u0;
-    dom.AllocateDomainMem(nx,ny,1,nu,dx,dt);
+    dom.AllocateDomainMem(0,nx,ny,1,nu,dx,dt);
     dom.Nproc = Nproc;
     //bounndary
     for(size_t ix=0; ix<nx; ix++)

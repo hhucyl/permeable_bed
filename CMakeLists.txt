@@ -24,7 +24,9 @@ INCLUDE(${MECHSYSSANDBOX_SOURCE_DIR}/UseMECHSYS.cmake)
 
 SET(PROGS
     test_cavity
-    test_carve
+    test_carve2
+    test_carve3
+    test_pipeflow
 )
 
 FOREACH(var ${PROGS})

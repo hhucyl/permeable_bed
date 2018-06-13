@@ -7,9 +7,9 @@ void Domain::WriteXDMF(char const * FileKey)
     fn.append(".h5");
     hid_t     file_id;
     file_id = H5Fcreate(fn.CStr(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-    size_t  Nx = nx;
-    size_t  Ny = ny;
-    size_t  Nz = nz;
+    size_t  Nx = Ndim(0);
+    size_t  Ny = Ndim(1);
+    size_t  Nz = Ndim(2);
     size_t Step = 1;
     size_t Nl = 1;
     std::cout<<Nx<<" "<<Ny<<" "<<Nz<<std::endl;
@@ -23,14 +23,16 @@ void Domain::WriteXDMF(char const * FileKey)
         double * BFvec      = new double[3*Nx*Ny*Nz];
         double * Vvecp      = new double[3*Nx*Ny*Nz];
         double * Vflbm      = new double[3*Nx*Ny*Nz];
-        double * Ff;
-        double *qq;
+        double * Ff = NULL;
+        double * Fft = NULL;
+        double *qq = NULL;
         if(Isq)  qq = new double[Nneigh*Nx*Ny*Nz];
         if(IsF)      Ff   = new double[Nneigh*Nx*Ny*Nz];
+        if(IsF)      Fft   = new double[Nneigh*Nx*Ny*Nz];
         size_t i=0;
-        for (size_t m=0;m<nz;m+=Step)
-        for (size_t l=0;l<ny;l+=Step)
-        for (size_t n=0;n<nx;n+=Step)
+        for (size_t m=0;m<Nz;m+=Step)
+        for (size_t l=0;l<Ny;l+=Step)
+        for (size_t n=0;n<Nx;n+=Step)
         {
             double rho    = 0.0;
             double gamma  = 0.0;
@@ -40,29 +42,24 @@ void Domain::WriteXDMF(char const * FileKey)
             Vec3_t flbm    = Vec3_t(0.0,0.0,0.0);
             Vec3_t BF     = Vec3_t(0.0,0.0,0.0);
             double temp = 0.0;
-            double temp1 = 0.0;
             for (size_t ni=0;ni<Step;ni++)
             for (size_t li=0;li<Step;li++)
             for (size_t mi=0;mi<Step;mi++)
             {
                 rho    += Rho    [n+ni][l+li][m+mi];
                 temp    = IsSolid[n+ni][l+li][m+mi] ? 2.0: 0.0;
-                temp1   = IsBoundary[n+ni][l+li][m+mi] ? 1.0: 0.0;
-                gamma  += std::max(Gamma[n+ni][l+li][m+mi],temp) + temp1;
-                over += Sum[n+ni][l+li][m+mi][1];
+                gamma  += std::max(Gamma[n+ni][l+li][m+mi],temp);
                 vel    += Vel    [n+ni][l+li][m+mi];
                 BF    += BForce    [n+ni][l+li][m+mi];
                 velp    += VelP    [n+ni][l+li][m+mi];
                 flbm    += Flbm    [n+ni][l+li][m+mi];
             }
             rho  /= Step*Step*Step;
-            over /= Step*Step*Step;
             gamma/= Step*Step*Step;
             vel  /= Step*Step*Step;
             velp  /= Step*Step*Step;
             flbm  /= Step*Step*Step;
             BF   /= Step*Step*Step;
-            Overlap[i] = (double) over;
             Ga   [i]  = (double) gamma;
             Density [i]  = (double) rho;            
             Vvec[3*i  ]  = (double) vel(0);//*(1.0-Ga[i]);
@@ -82,6 +79,13 @@ void Domain::WriteXDMF(char const * FileKey)
                 for (size_t k=0; k<Nneigh; k++)
                 {
                     Ff[Nneigh*i + k] = (double) F[n][l][m][k];
+                }
+            }
+            if(IsFt) 
+            {
+                for (size_t k=0; k<Nneigh; k++)
+                {
+                    Fft[Nneigh*i + k] = (double) Ftemp[n][l][m][k];
                 }
             }
             if(Isq) 
@@ -104,8 +108,6 @@ void Domain::WriteXDMF(char const * FileKey)
         {
             dsname.Printf("Gamma");
             H5LTmake_dataset_double(file_id,dsname.CStr(),1,dims,Ga   );
-            dsname.Printf("Overlap");
-            H5LTmake_dataset_double(file_id,dsname.CStr(),1,dims,Overlap   );
         }
         dims[0] = 3*Nx*Ny*Nz;
         dsname.Printf("Velocity_%d",j);
@@ -124,6 +126,11 @@ void Domain::WriteXDMF(char const * FileKey)
         {
             dsname.Printf("F_%d",j);
             H5LTmake_dataset_double(file_id,dsname.CStr(),1,dims,Ff    );
+        }
+        if(IsFt)
+        {
+            dsname.Printf("Ftemp_%d",j);
+            H5LTmake_dataset_double(file_id,dsname.CStr(),1,dims,Fft    );
         }
         if(Isq)
         {
@@ -150,8 +157,9 @@ void Domain::WriteXDMF(char const * FileKey)
         delete [] Vvecp    ;
         delete [] Vflbm    ;
         delete [] BFvec  ;
-        if(IsF) delete [] Ff;
-        if(Isq) delete [] qq;
+        if(IsF) delete [] Ff; 
+        if(IsFt) delete [] Fft; 
+        if(Isq) delete [] qq; 
         delete [] Overlap;
     }
 
@@ -164,14 +172,14 @@ void Domain::WriteXDMF(char const * FileKey)
     std::ostringstream oss;
 
 
-    if (nz==1)
+    if (Nz==1)
     {
         oss << "<?xml version=\"1.0\" ?>\n";
         oss << "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n";
         oss << "<Xdmf Version=\"2.0\">\n";
         oss << " <Domain>\n";
         oss << "   <Grid Name=\"mesh1\" GridType=\"Uniform\">\n";
-        oss << "     <Topology TopologyType=\"2DCoRectMesh\" Dimensions=\"" << ny << " " << nx << "\"/>\n";
+        oss << "     <Topology TopologyType=\"2DCoRectMesh\" Dimensions=\"" << Ny << " " << Nx << "\"/>\n";
         oss << "     <Geometry GeometryType=\"ORIGIN_DXDY\">\n";
         oss << "       <DataItem Format=\"XML\" NumberType=\"Float\" Dimensions=\"2\"> 0.0 0.0\n";
         oss << "       </DataItem>\n";
@@ -181,38 +189,38 @@ void Domain::WriteXDMF(char const * FileKey)
         for (size_t j=0;j<Nl;j++)
         {
         oss << "     <Attribute Name=\"Density_" << j << "\" AttributeType=\"Scalar\" Center=\"Node\">\n";
-        oss << "       <DataItem Dimensions=\"" << nx << " " << ny << " " << nz << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
         oss << "        " << fn.CStr() <<":/Density_" << j << "\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
         oss << "     <Attribute Name=\"Velocity_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
-        oss << "       <DataItem Dimensions=\"" << nx << " " << ny << " " << nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
         oss << "        " << fn.CStr() <<":/Velocity_" << j << "\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
         oss << "     <Attribute Name=\"Velocity_P_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
-        oss << "       <DataItem Dimensions=\"" << nx << " " << ny << " " << nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
         oss << "        " << fn.CStr() <<":/Velocity_P_" << j << "\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
         oss << "     <Attribute Name=\"Flbm_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
-        oss << "       <DataItem Dimensions=\"" << nx << " " << ny << " " << nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
         oss << "        " << fn.CStr() <<":/Flbm_" << j << "\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
         oss << "     <Attribute Name=\"BForce_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
-        oss << "       <DataItem Dimensions=\"" << nx << " " << ny << " " << nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
         oss << "        " << fn.CStr() <<":/BForce_" << j << "\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
         }
         oss << "     <Attribute Name=\"Gamma\" AttributeType=\"Scalar\" Center=\"Node\">\n";
-        oss << "       <DataItem Dimensions=\"" << nx << " " << ny << " " << nz << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
         oss << "        " << fn.CStr() <<":/Gamma\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
         oss << "     <Attribute Name=\"Overlap\" AttributeType=\"Scalar\" Center=\"Node\">\n";
-        oss << "       <DataItem Dimensions=\"" << nx << " " << ny << " " << nz << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
         oss << "        " << fn.CStr() <<":/Overlap\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
@@ -220,10 +228,46 @@ void Domain::WriteXDMF(char const * FileKey)
         oss << " </Domain>\n";
         oss << "</Xdmf>\n";
     }
-    
     else
     {
-        std::cout<<"To Be Continue";
+        oss << "<?xml version=\"1.0\" ?>\n";
+        oss << "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n";
+        oss << "<Xdmf Version=\"2.0\">\n";
+        oss << " <Domain>\n";
+        oss << "   <Grid Name=\"LBM_Mesh\" GridType=\"Uniform\">\n";
+        oss << "     <Topology TopologyType=\"3DCoRectMesh\" Dimensions=\"" << Nz << " " << Ny << " " << Nx << "\"/>\n";
+        oss << "     <Geometry GeometryType=\"ORIGIN_DXDYDZ\">\n";
+        oss << "       <DataItem Format=\"XML\" NumberType=\"Float\" Dimensions=\"3\"> 0.0 0.0 0.0\n";
+        oss << "       </DataItem>\n";
+        oss << "       <DataItem Format=\"XML\" NumberType=\"Float\" Dimensions=\"3\"> " << Step*dx << " " << Step*dx  << " " << Step*dx  << "\n";
+        oss << "       </DataItem>\n";
+        oss << "     </Geometry>\n";
+        for (size_t j=0;j<Nl;j++)
+        {
+        oss << "     <Attribute Name=\"Density_" << j << "\" AttributeType=\"Scalar\" Center=\"Node\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nz << " " << Ny << " " << Nx << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "        " << fn.CStr() <<":/Density_" << j << "\n";
+        oss << "       </DataItem>\n";
+        oss << "     </Attribute>\n";
+        oss << "     <Attribute Name=\"Velocity_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nz << " " << Ny << " " << Nx << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "        " << fn.CStr() <<":/Velocity_" << j << "\n";
+        oss << "       </DataItem>\n";
+        oss << "     </Attribute>\n";
+        oss << "     <Attribute Name=\"BForce_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nz << " " << Ny << " " << Nx << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "        " << fn.CStr() <<":/BForce_" << j << "\n";
+        oss << "       </DataItem>\n";
+        oss << "     </Attribute>\n";
+        }
+        oss << "     <Attribute Name=\"Gamma\" AttributeType=\"Scalar\" Center=\"Node\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nz << " " << Ny << " " << Nx << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "        " << fn.CStr() <<":/Gamma\n";
+        oss << "       </DataItem>\n";
+        oss << "     </Attribute>\n";
+        oss << "   </Grid>\n";
+        oss << " </Domain>\n";
+        oss << "</Xdmf>\n";
     }
     fn = FileKey;
     fn.append(".xmf");

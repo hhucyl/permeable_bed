@@ -21,7 +21,7 @@ A_MAKE_ALL_WARNINGS:BOOL=ON
 A_MAKE_CHECK_OVERLAP:BOOL=ON
 
 //Make with debug symbols (-g)
-A_MAKE_DEBUG_SYMBOLS:BOOL=OFF
+A_MAKE_DEBUG_SYMBOLS:BOOL=ON
 
 //Make optimized (-O3)
 A_MAKE_OPTIMIZED:BOOL=ON
@@ -372,6 +372,8 @@ VORO_VORO_H:PATH=/home/pzhang/pkg/voro++-0.4.5/src
 # INTERNAL cache entries
 ########################
 
+//MODIFIED property for variable: A_MAKE_DEBUG_SYMBOLS
+A_MAKE_DEBUG_SYMBOLS-MODIFIED:INTERNAL=ON
 //ADVANCED property for variable: BLAS_Accelerate_LIBRARY
 BLAS_Accelerate_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BLAS_acml_LIBRARY
