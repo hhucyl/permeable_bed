@@ -15,7 +15,7 @@
 ########################
 
 //Make with all warnings (-Wall)
-A_MAKE_ALL_WARNINGS:BOOL=ON
+A_MAKE_ALL_WARNINGS:BOOL=OFF
 
 //Check for maximun overlapping in DEM simulations
 A_MAKE_CHECK_OVERLAP:BOOL=ON
@@ -372,6 +372,8 @@ VORO_VORO_H:PATH=/home/pzhang/pkg/voro++-0.4.5/src
 # INTERNAL cache entries
 ########################
 
+//MODIFIED property for variable: A_MAKE_ALL_WARNINGS
+A_MAKE_ALL_WARNINGS-MODIFIED:INTERNAL=ON
 //MODIFIED property for variable: A_MAKE_DEBUG_SYMBOLS
 A_MAKE_DEBUG_SYMBOLS-MODIFIED:INTERNAL=ON
 //ADVANCED property for variable: BLAS_Accelerate_LIBRARY

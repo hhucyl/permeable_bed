@@ -8,7 +8,7 @@
 
 /home/pzhang/chen/permeable_bed/./lbm/AddSolidBoundary.h
 
-/home/pzhang/chen/permeable_bed/./lbm/Domain1.h
+/home/pzhang/chen/permeable_bed/./lbm/Domain.h
 hdf5.h
 -
 hdf5_hl.h
@@ -37,8 +37,8 @@ AddSolidBoundary.h
 /home/pzhang/chen/permeable_bed/./lbm/Output.h
 
 /home/pzhang/chen/permeable_bed/test_carve3.cpp
-./lbm/Domain1.h
-/home/pzhang/chen/permeable_bed/./lbm/Domain1.h
+./lbm/Domain.h
+/home/pzhang/chen/permeable_bed/./lbm/Domain.h
 
 /home/pzhang/mechsys/mechsys/linalg/laexpr.h
 iostream

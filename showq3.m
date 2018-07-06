@@ -63,11 +63,11 @@ if(Nneigh == 19)
          [ 0,-1, 1]};
 end
     
-pos = [25.5,105.5,25.5];
+pos = [49.5,49.5,49.5];
 R = 5;
 ipt = [];
 for k = 2:Nneigh
-%     k=6;
+%     k=18;
     temp = q{k};
     I = find(temp>0);
     II{k-1} = I;
@@ -124,7 +124,7 @@ for k = 2:Nneigh
 %         s = s+1;
 %     end
 end
-plot3(0,0,0,'kd')
+ plot3(0,0,0,'kd')
          
 %axis([180 220 250 350])
  

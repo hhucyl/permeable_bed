@@ -68,8 +68,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/test_cavity.dir/DependInfo.cmake"
-  "CMakeFiles/test_carve2.dir/DependInfo.cmake"
-  "CMakeFiles/test_carve3.dir/DependInfo.cmake"
-  "CMakeFiles/test_pipeflow.dir/DependInfo.cmake"
+  "CMakeFiles/test_cd_ga.dir/DependInfo.cmake"
+  "CMakeFiles/test_cd_bb.dir/DependInfo.cmake"
+  "CMakeFiles/test_sc_ga.dir/DependInfo.cmake"
+  "CMakeFiles/test_sc_bb.dir/DependInfo.cmake"
   )

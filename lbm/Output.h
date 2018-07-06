@@ -12,7 +12,6 @@ void Domain::WriteXDMF(char const * FileKey)
     size_t  Nz = Ndim(2);
     size_t Step = 1;
     size_t Nl = 1;
-    std::cout<<Nx<<" "<<Ny<<" "<<Nz<<std::endl;
     for (size_t j=0;j<Nl;j++)
     {
         // Creating data sets
@@ -36,7 +35,6 @@ void Domain::WriteXDMF(char const * FileKey)
         {
             double rho    = 0.0;
             double gamma  = 0.0;
-            double over = 0.0;
             Vec3_t vel    = Vec3_t(0.0,0.0,0.0);
             Vec3_t velp    = Vec3_t(0.0,0.0,0.0);
             Vec3_t flbm    = Vec3_t(0.0,0.0,0.0);
@@ -259,6 +257,12 @@ void Domain::WriteXDMF(char const * FileKey)
         oss << "        " << fn.CStr() <<":/BForce_" << j << "\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
+        oss << "     <Attribute Name=\"Flbm_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "        " << fn.CStr() <<":/Flbm_" << j << "\n";
+        oss << "       </DataItem>\n";
+        oss << "     </Attribute>\n";
+        
         }
         oss << "     <Attribute Name=\"Gamma\" AttributeType=\"Scalar\" Center=\"Node\">\n";
         oss << "       <DataItem Dimensions=\"" << Nz << " " << Ny << " " << Nx << "\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
