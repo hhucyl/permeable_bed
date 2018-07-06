@@ -6,6 +6,8 @@ struct myUserData
     std::ofstream oss_ss;
     double R;
     double Tff;
+    size_t collidetype;
+    size_t bbtype;
 };
 
 
@@ -36,7 +38,7 @@ void Report(LBM::Domain &dom, void *UD)
     if(dom.Time <1e-6)
     {
         String fs;
-        fs.Printf("%s_%d_%g.out","Cd_LIBB_MRT",nx,dom.Tau);
+        fs.Printf("%s_collidetype%d_bbtype%d_%d_%g.out","Cd",dat.collidetype,dat.bbtype,nx,dom.Tau);
         dat.oss_ss.open(fs.CStr(),std::ios::out);
         dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"Re"<<Util::_8s<<"Cd_ref1"<<Util::_8s<<"Cd_ref2"<<Util::_8s<<"Cd\n";
     }else{
@@ -91,14 +93,14 @@ int main (int argc, char **argv) try
         throw new Fatal("Collide Type is NOT RIGHT!!!!!");    
     }
     size_t bbtype = 3;    
-    
-    
     size_t Nproc = 12;
     size_t h = 100;
     double tau = 0.8;
-    if(argc>=2) h = atoi(argv[1]); 
-    if(argc>=3) tau = atof(argv[2]);
-    if(argc>=4) Nproc = atoi(argv[3]); 
+    if(argc>=2) collidetype = atoi(argv[1]); 
+    if(argc>=3) bbtype = atoi(argv[2]);     
+    if(argc>=4) h = atoi(argv[3]); 
+    if(argc>=5) tau = atof(argv[4]);
+    if(argc>=6) Nproc = atoi(argv[5]); 
      
     size_t nx = h;
     size_t ny = h;
@@ -131,6 +133,8 @@ int main (int argc, char **argv) try
     myUserData my_dat;
     dom.UserData = &my_dat;
     my_dat.R = R;
+    my_dat.collidetype = collidetype;
+    my_dat.bbtype = bbtype;
     dom.Nproc = Nproc;
     //debug mod
     // dom.Isq = true;
@@ -140,9 +144,9 @@ int main (int argc, char **argv) try
     Initial(dom,rho0,v0,g0);
     dom.AddSphereQ(pos,R);
 
-    double Tf = 1e2;
+    double Tf = 1e6;
     my_dat.Tff = Tf;
-    double dtout = 1;
+    double dtout = 1e3;
     char const * TheFileKey = "test_carveb";
     //solving
     dom.StartSolve();
@@ -152,11 +156,11 @@ int main (int argc, char **argv) try
         if (dom.Time>=tout)
         {
             
-            String fn;
-            fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            // String fn;
+            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            dom.WriteXDMF(fn.CStr());
-            dom.idx_out++;
+            // dom.WriteXDMF(fn.CStr());
+            // dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;
