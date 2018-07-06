@@ -4,10 +4,11 @@ One need to first install all the denpendencies in MECHSYS to run this code. Loc
 
 MECHSYS:   mechsys.nongnu.org
 
-test_pipeflow: pipeflow in 3D
+Oldtest includes the old test
 
-test_carve2: flow pass through a cylinder in 2D
+test_cd_* : the test for drag coefficient under interpolation bounce back method(bb) or partial saturated method(ga)
 
-test_carve3: flow pass through a sphere (not done)
+test_sc_*: test the permeablity of simple sphere array
 
-test_carvity: carvity in 2D (not working)
+
+
