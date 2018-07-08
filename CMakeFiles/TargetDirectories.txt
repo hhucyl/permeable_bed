@@ -1,6 +1,0 @@
-/home/pzhang/chen/permeable_bed/CMakeFiles/edit_cache.dir
-/home/pzhang/chen/permeable_bed/CMakeFiles/rebuild_cache.dir
-/home/pzhang/chen/permeable_bed/CMakeFiles/test_cd_ga.dir
-/home/pzhang/chen/permeable_bed/CMakeFiles/test_cd_bb.dir
-/home/pzhang/chen/permeable_bed/CMakeFiles/test_sc_ga.dir
-/home/pzhang/chen/permeable_bed/CMakeFiles/test_sc_bb.dir
