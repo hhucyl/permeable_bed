@@ -121,6 +121,7 @@ public:
     //Methods
     
     void   CollideMRT();///< The collide step of LBM with MRT                                  
+    void   CollideMRTMR();///< The collide step of LBM with MRT                                  
     void   MeqD2Q9(double *m, double rho, Vec3_t &vel);                      
     void   MeqD3Q15(double *m, double rho, Vec3_t &vel);             
     void   MeqD3Q19(double *m, double rho, Vec3_t &vel);             
@@ -132,6 +133,7 @@ public:
     void   BounceBackLIBB(bool calcF = true);
     void   BounceBackQIBB(bool calcF = true);
     void   BounceBackCLI(bool calcF = true);
+    void   BounceBackMR(bool calcF = true);
     void   CalcProps();
     void   Initialize(iVec3_t idx, double Rho, Vec3_t & Vel);           ///< Initialize each cell with a given density and velocity
     double Feq(size_t k, double Rho, Vec3_t & Vel);                               ///< The equilibrium function
@@ -160,6 +162,7 @@ public:
     std::clock_t StartTime;
     std::clock_t EndTime;
     double ****q;
+    double ****t;
     double ****Omeis;
     double **** F;                           ///< The array containing the individual functions with the order of the lattice, the x,y,z coordinates and the order of the function.
     double **** Ftemp;                       ///< A similar array to hold provitional data
@@ -191,9 +194,11 @@ public:
     double       Time;                        ///< Simulation time variable
     size_t       Nl;                          ///< Number of lattices (fluids)
     double       Sc;                          ///< Smagorinsky constant
+    double       Nu;
     LBMethod     Method;
     CollideMethod MethodC;
     BounceBackMethod MethodB;
+    bool IsMR;
     bool IsF;
     bool IsFt;
     bool Isq;
@@ -218,6 +223,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
     IsF = false;
     IsFt = false;
     Isq = false;
+    IsMR = false;
     ptr2meq = NULL;
     ptr2collide = NULL;
     ptr2bb = NULL;
@@ -233,6 +239,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
     IsFirstTime = true;
     Method = TheMethod;
     MethodC = TheMethodC;
+    Nu = nu[0];
     Tau         = 3.0*nu[0]*dt/(dx*dx)+0.5;
     if (TheMethod==D2Q5)
     {
@@ -334,7 +341,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
 
 
 
-    
+    t           = new double *** [Ndim(0)];    
     q           = new double *** [Ndim(0)];
 	Omeis       = new double *** [Ndim(0)];
     VelP        = new Vec3_t **  [Ndim(0)];
@@ -355,6 +362,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
         Rho     [nx]    = new double *  [Ndim(1)];
         IsSolid [nx]    = new bool   *  [Ndim(1)];
         q       [nx]    = new double ** [Ndim(1)];
+        t       [nx]    = new double ** [Ndim(1)];
 	    Omeis   [nx]    = new double ** [Ndim(1)];
         VelP    [nx]    = new Vec3_t *  [Ndim(1)];
         Flbm    [nx]    = new Vec3_t *  [Ndim(1)];
@@ -368,6 +376,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
             Rho     [nx][ny]    = new double   [Ndim(2)];
             IsSolid [nx][ny]    = new bool     [Ndim(2)];
             q       [nx][ny]    = new double * [Ndim(2)];
+            t       [nx][ny]    = new double * [Ndim(2)];
 	        Omeis   [nx][ny]    = new double * [Ndim(2)];
             VelP    [nx][ny]    = new Vec3_t   [Ndim(2)];
             Flbm    [nx][ny]    = new Vec3_t   [Ndim(2)];
@@ -377,6 +386,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
                 F    [nx][ny][nz]    = new double [Nneigh];
                 Ftemp[nx][ny][nz]    = new double [Nneigh];
                 q    [nx][ny][nz]    = new double [Nneigh];
+                t    [nx][ny][nz]    = new double [Nneigh];
 	            Omeis[nx][ny][nz]    = new double [Nneigh];
                 IsSolid[nx][ny][nz]  = false;
                 VelP[nx][ny][nz] = 0.0, 0.0, 0.0;
@@ -388,6 +398,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
                     F    [nx][ny][nz][nn] = 0.0;
                     Ftemp[nx][ny][nz][nn] = 0.0;
                     q    [nx][ny][nz][nn] = -1.0;
+                    t    [nx][ny][nz][nn] = 0.0;
                     Omeis[nx][ny][nz][nn] = 0.0;
                 }
             }

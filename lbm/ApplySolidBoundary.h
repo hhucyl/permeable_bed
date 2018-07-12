@@ -68,7 +68,6 @@ inline void Domain::AddDiskQ(Vec3_t &pos, double R)
             }
         }
         // if(L<1.1*R) IsSolid[ix][iy][iz] = true;
-
     }
 }
 
@@ -77,7 +76,6 @@ inline void Domain::AddSphereQ(Vec3_t &pos, double R)
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
-    std::cout<<"Add Sphere "<<std::endl;
     for(size_t ix=0; ix<nx; ++ix)
     for(size_t iy=0; iy<ny; ++iy)
     for(size_t iz=0; iz<nz; ++iz)  
@@ -149,6 +147,7 @@ inline void Domain::AddSphereQ(Vec3_t &pos, double R)
 
 inline void Domain::BounceBack(bool calcF = true)
 {
+    if(Time<0.5) std::cout<<"--- "<<"SBB"<<" ---"<<std::endl;
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
@@ -196,6 +195,8 @@ inline void Domain::BounceBack(bool calcF = true)
 
 inline void Domain::BounceBackLIBB(bool calcF = true)
 {
+                    
+    if(Time<0.5) std::cout<<"--- "<<"LIBB"<<" ---"<<std::endl;    
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
@@ -226,17 +227,11 @@ inline void Domain::BounceBackLIBB(bool calcF = true)
             
         // }
         
-        
+        int num = 0;
         for(size_t k=0; k<Nneigh; k++)
         {
             double qt = q[ix][iy][iz][k];
-            // if(ix == 20&&iy==25 &&iz==24&&k==1)
-            // {
-            //     std::cout<<"q= "<<qt<<std::endl;
-            //     std::cout<<"F = "<<F[ix][iy][iz][k]<<std::endl;
-            //     std::cout<<"FO = "<<(1.0/(2.0*qt))*Temp[Op[k]]+(1-1.0/(2.0*qt))*Temp[k]<<std::endl;
-                
-            // }
+            
             if(qt<0) continue;
             size_t oix = (size_t)((int)ix + (int)C[Op[k]](0) + (int)nx)%nx;
             size_t oiy = (size_t)((int)iy + (int)C[Op[k]](1) + (int)ny)%ny;
@@ -245,6 +240,7 @@ inline void Domain::BounceBackLIBB(bool calcF = true)
             size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)ny)%ny;
             size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)nz)%nz;
             fw[k] = qt*Ftemp[ix][iy][iz][k] + (1-qt) * Ftemp[nix][niy][niz][k];
+            
             if(IsSolid[oix][oiy][oiz])
             {
                 if(IsSolid[nix][niy][niz])
@@ -267,9 +263,14 @@ inline void Domain::BounceBackLIBB(bool calcF = true)
 
                 }
                 
+            }else{
+                num = num +1;
+                
             }
             
+            
         }
+        std::cout<<num<<std::endl;
         if(!calcF) continue;
         Vec3_t Flbmt(0,0,0);
         for(size_t k=0; k<Nneigh; ++k)
@@ -287,6 +288,7 @@ inline void Domain::BounceBackLIBB(bool calcF = true)
 
 inline void Domain::BounceBackQIBB(bool calcF = true)
 {
+    if(Time<0.5) std::cout<<"--- "<<"QIBB"<<" ---"<<std::endl;    
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
@@ -359,8 +361,89 @@ inline void Domain::BounceBackQIBB(bool calcF = true)
     }   
 }
 
+inline void Domain::BounceBackMR(bool calcF = true)
+{
+    if(Time<0.5) std::cout<<"--- "<<"MR"<<" ---"<<std::endl;    
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+	for(size_t ix=0; ix<nx; ix++)
+	for(size_t iy=0; iy<ny; iy++)
+	for(size_t iz=0; iz<nz; iz++)
+    {
+    // for(size_t i=0; i<Ncells; ++i)
+	// {
+    //     iVec3_t iv(0,0,0);
+    //     idx2Pt(i,iv);
+    //     size_t ix = iv(0);
+    //     size_t iy = iv(1);
+    //     size_t iz = iv(2);
+        double fw[Nneigh];
+        for(size_t k=0; k<Nneigh; k++)
+        {
+            double qt = q[ix][iy][iz][k];
+            if(qt<0) continue;
+            size_t oix = (size_t)((int)ix + (int)C[Op[k]](0) + (int)nx)%nx;
+            size_t oiy = (size_t)((int)iy + (int)C[Op[k]](1) + (int)ny)%ny;
+            size_t oiz = (size_t)((int)iz + (int)C[Op[k]](2) + (int)nz)%nz;
+            
+            if(IsSolid[oix][oiy][oiz])
+            {
+                size_t nix = (size_t)((int)ix + (int)C[k](0) + (int)nx)%nx;
+                size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)ny)%ny;
+                size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)nz)%nz;
+                size_t nnix = (size_t)((int)nix + (int)C[k](0) + (int)nx)%nx;
+                size_t nniy = (size_t)((int)niy + (int)C[k](1) + (int)ny)%ny;
+                size_t nniz = (size_t)((int)niz + (int)C[k](2) + (int)nz)%nz;
+                
+                if(IsSolid[nnix][nniy][nniz])
+                {
+                    fw[k] = qt*Ftemp[ix][iy][iz][k] + (1-qt) * Ftemp[nix][niy][niz][k];
+                    if(IsSolid[nix][niy][niz])
+                    {
+                        F[ix][iy][iz][k] = Ftemp[ix][iy][iz][Op[k]];
+                    }else{
+                        //Peng et al 2016 Yu's method
+                        double fu = 2.0*W[k]*1.0*dot(C[k],VelP[ix][iy][iz]);
+                        F[ix][iy][iz][k] = 1.0/(1+qt)*(fw[Op[k]]+fu) + qt/(1+qt)*F[nix][niy][niz][k];
+                    }
+                }else{
+                    double k1 = (1-2.0*qt-2.0*qt*qt)/((1.0+qt)*(1.0+qt));
+                    double k2 = qt*qt/((1.0+qt)*(1.0+qt));
+                    //Peng et al 2016 Yu's method
+                    double fu = 0.0;
+                    // double FF =  -(t[ix][iy][iz][k]/Nu)*1.0/(4.0*(1+qt)*(1+qt));
+                    double FF =  -t[ix][iy][iz][k]*(4.0/(3.0*Nu*(1+qt)*(1+qt)))*((Tau-0.5)/(1.0/S(k)-0.5));
+                    F[ix][iy][iz][k] = Ftemp[ix][iy][iz][Op[k]] + k1*Ftemp[nix][niy][niz][Op[k]] + k2*Ftemp[nnix][nniy][nniz][Op[k]] - k1*Ftemp[ix][iy][iz][k] - k2*Ftemp[nix][niy][niz][k] + FF + fu;
+                    
+                }
+                
+                
+            }
+            
+        }
+        if(!calcF) continue;
+        Vec3_t Flbmt(0,0,0);
+        for(size_t k=0; k<Nneigh; ++k)
+        {
+            double qt = q[ix][iy][iz][k];
+            if(qt<0) continue;
+            Flbmt += (Ftemp[ix][iy][iz][k]+F[ix][iy][iz][Op[k]])*C[k] - 2.0*W[k]*1.0*3.0*dot(C[Op[k]],VelP[ix][iy][iz])/Cs/Cs*VelP[ix][iy][iz];
+        }
+        Flbm[ix][iy][iz] = Flbmt;
+
+        
+
+    }   
+}
+
 inline void Domain::BounceBackCLI(bool calcF = true)
 {
+    if(Time<0.5) std::cout<<"--- "<<"CLI"<<" ---"<<std::endl;    
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
