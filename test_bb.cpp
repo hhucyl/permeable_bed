@@ -150,7 +150,7 @@ int main (int argc, char **argv) try
     my_dat.uw = uw;
     dom.Nproc = Nproc;
     //debug mod
-    dom.Isq = true;
+    // dom.Isq = true;
     // dom.IsF = false;
     // dom.IsFt = false;
     //boundary
