@@ -1,7 +1,7 @@
 clear
 clc
 prefix_name = {'/home/pzhang/chen/permeable_bed/'};
-middle_name = {'test_carve3b_'};
+middle_name = {'test_line_'};
 
 name = strcat(prefix_name,middle_name,num2str(0,'%04d'),'.h5');
 [data,domain] = getData(char(name),char('/q_0'),2,false);
@@ -63,11 +63,12 @@ if(Nneigh == 19)
          [ 0,-1, 1]};
 end
     
-pos = [49.5,49.5,49.5];
+% pos = [29.5,28.5,29.5];
+pos = [0.0,0.0,0.0];
 R = 5;
 ipt = [];
-for k = 2:Nneigh
-%     k=18;
+%for k = 2:Nneigh
+     k=8;
     temp = q{k};
     I = find(temp>0);
     II{k-1} = I;
@@ -105,6 +106,8 @@ for k = 2:Nneigh
         yy = [iyy(i),niyy(i)];
         zz = [izz(i),nizz(i)];
         plot3(xx,yy,zz,'.r-')
+%         plot3(xx(1),yy(1),zz(1),'.r')
+        plot3(xx(2),yy(2),zz(2),'.k','markersize',20)
         hold on
 %         scatter3(ix(i),iy(i),iz(i),'bs')
 %         hold on
@@ -123,7 +126,7 @@ for k = 2:Nneigh
 %         plot3(ipx,ipy,ipz,'*')
 %         s = s+1;
 %     end
-end
+%end
  plot3(0,0,0,'kd')
          
 %axis([180 220 250 350])

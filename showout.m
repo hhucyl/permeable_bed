@@ -1,6 +1,6 @@
 clear
 clc
-file_name = {'Cd_collidetype1_bbtype1_100_0.8.out'};
+file_name = {'Cd_collidetype1_bbtype3_50_0.8.out'};
 file = importdata(char(file_name));
 loglog(file.data(:,2),file.data(:,3),'g')
 hold on 
