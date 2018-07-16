@@ -168,7 +168,7 @@ int main (int argc, char **argv) try
             }
 
         }
-        dom.VelP[ix][ny-1][0] = uw,0.0,0.0;
+        dom.VelP[ix][ny-1][iz] = uw,0.0,0.0;
     }
     //initial
     Initial(dom,rho0,v0,g0);
