@@ -48,6 +48,7 @@ enum BounceBackMethod
     SBB,
     LIBB,
     QIBB,
+    MR,
     CLI
 };
 
@@ -444,7 +445,9 @@ inline void Domain::SetBounceBack()
     }else if(MethodB == QIBB){
         ptr2bb = &LBM::Domain::BounceBackQIBB;
     }else if(MethodB == CLI){
-        ptr2bb = &LBM::Domain::BounceBackCLI;        
+        ptr2bb = &LBM::Domain::BounceBackCLI;
+    }else if(MethodB == MR){
+        ptr2bb = &LBM::Domain::BounceBackMR;         
     }else{
         throw new Fatal("Collide Type is NOT RIGHT!!!!!");    
     }
@@ -487,7 +490,7 @@ inline void Domain::StartSolve()
     }
     printf("\033[01;33m--- Solving ---\033[0m\n");
     printf("--- Tau = %g ---\n",Tau);
-    StartTime = std::clock();
+    // StartTime = std::clock();
     idx_out = 0;
 }
 inline void Domain::EndSolve()

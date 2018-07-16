@@ -169,13 +169,13 @@ inline void Domain::BounceBack(bool calcF = true)
 
         for(size_t k=0; k<Nneigh; k++)
         {
-            size_t oix = (size_t)((int)ix + (int)C[Op[k]](0) + (int)nx)%nx;
-            size_t oiy = (size_t)((int)iy + (int)C[Op[k]](1) + (int)ny)%ny;
-            size_t oiz = (size_t)((int)iz + (int)C[Op[k]](2) + (int)nz)%nz;
+            size_t nix = (size_t)((int)ix + (int)C[k](0) + (int)nx)%nx;
+            size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)ny)%ny;
+            size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)nz)%nz;
             
-            if(IsSolid[oix][oiy][oiz])
+            if(IsSolid[nix][niy][niz])
             {   
-                F[ix][iy][iz][k] = Ftemp[ix][iy][iz][Op[k]];
+                F[ix][iy][iz][Op[k]] = Ftemp[ix][iy][iz][k];
                 
             }
             
@@ -216,61 +216,33 @@ inline void Domain::BounceBackLIBB(bool calcF = true)
     //     size_t iz = iv(2);
         // double Temp[Nneigh];
         // double Temp1[Nneigh];
-        double fw[Nneigh];
-        // for(size_t k=0; k<Nneigh; k++)
-        // {
-        //     Temp[k] = Ftemp[ix][iy][iz][k];
-        //     size_t nix = (size_t)((int)ix + (int)C[k](0) + (int)nx)%nx;
-        //     size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)ny)%ny;
-        //     size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)nz)%nz;
-        //     Temp1[k] = Ftemp[nix][niy][niz][k];
-            
-        // }
-        
-        int num = 0;
         for(size_t k=0; k<Nneigh; k++)
         {
             double qt = q[ix][iy][iz][k];
-            
             if(qt<0) continue;
+            double fw[Nneigh];
             size_t oix = (size_t)((int)ix + (int)C[Op[k]](0) + (int)nx)%nx;
             size_t oiy = (size_t)((int)iy + (int)C[Op[k]](1) + (int)ny)%ny;
             size_t oiz = (size_t)((int)iz + (int)C[Op[k]](2) + (int)nz)%nz;
-            size_t nix = (size_t)((int)ix + (int)C[k](0) + (int)nx)%nx;
-            size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)ny)%ny;
-            size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)nz)%nz;
-            fw[k] = qt*Ftemp[ix][iy][iz][k] + (1-qt) * Ftemp[nix][niy][niz][k];
+            double *f = F[ix][iy][iz];
+            double *fo = F[oix][oiy][oiz];
+            double *ft = Ftemp[ix][iy][iz];
+            double *fto = Ftemp[oix][oiy][oiz];
             
+            fw[k] = qt*ft[k] + (1-qt) * fto[k];
             if(IsSolid[oix][oiy][oiz])
             {
-                if(IsSolid[nix][niy][niz])
-                {
-                    F[ix][iy][iz][k] = Ftemp[ix][iy][iz][Op[k]];
-                }else{
-                    // Ftemp[ix][iy][iz][k] = F[ix][iy][iz][k];
-                    /*
-                    if(qt<0.5)
-                    {
-                        // if(IsSolid[nix][niy][niz]) qt = 0.5;
-                        // F[ix][iy][iz][k] = 2.0*qt*Temp[Op[k]]+(1-2.0*qt)*F[ix][iy][iz][Op[k]];                 
-                        F[ix][iy][iz][k] = 2.0*qt*Temp[Op[k]]+(1-2.0*qt)*Temp1[Op[k]];                 
-                    }else{
-                        F[ix][iy][iz][k] = (1.0/(2.0*qt))*Temp[Op[k]]+(1-1.0/(2.0*qt))*Temp[k];                                                             
-                    }*/
-                    //Peng et al 2016 Yu's method
-                    double fu = 2.0*W[k]*1.0*dot(C[k],VelP[ix][iy][iz]);
-                    F[ix][iy][iz][k] = 1.0/(1+qt)*(fw[Op[k]]+fu) + qt/(1+qt)*F[nix][niy][niz][k];
-
-                }
-                
+                f[Op[k]] = ft[k];
             }else{
-                num = num +1;
-                
+                //Peng et al 2016 Yu's method
+                double fu = 2.0*W[k]*1.0*3.0*dot(C[Op[k]],VelP[ix][iy][iz]);
+                f[Op[k]] = 1.0/(1+qt)*(fw[k]+fu) + qt/(1+qt)*fo[Op[k]];
             }
+        
+            
             
             
         }
-        std::cout<<num<<std::endl;
         if(!calcF) continue;
         Vec3_t Flbmt(0,0,0);
         for(size_t k=0; k<Nneigh; ++k)
@@ -306,44 +278,45 @@ inline void Domain::BounceBackQIBB(bool calcF = true)
     //     size_t ix = iv(0);
     //     size_t iy = iv(1);
     //     size_t iz = iv(2);
-        double fw[Nneigh];
+        
 
         for(size_t k=0; k<Nneigh; k++)
         {
             double qt = q[ix][iy][iz][k];
             if(qt<0) continue;
+            double fw[Nneigh];
             size_t oix = (size_t)((int)ix + (int)C[Op[k]](0) + (int)nx)%nx;
             size_t oiy = (size_t)((int)iy + (int)C[Op[k]](1) + (int)ny)%ny;
             size_t oiz = (size_t)((int)iz + (int)C[Op[k]](2) + (int)nz)%nz;
-            
-            if(IsSolid[oix][oiy][oiz])
+        
+            size_t ooix = (size_t)((int)oix + (int)C[Op[k]](0) + (int)nx)%nx;
+            size_t ooiy = (size_t)((int)oiy + (int)C[Op[k]](1) + (int)ny)%ny;
+            size_t ooiz = (size_t)((int)oiz + (int)C[Op[k]](2) + (int)nz)%nz;
+            double *f = F[ix][iy][iz];
+            double *foo = F[ooix][ooiy][ooiz];
+            double *fo = F[oix][oiy][oiz];
+            double *ft = Ftemp[ix][iy][iz];
+            double *fto = Ftemp[oix][oiy][oiz];
+            double *ftoo = Ftemp[ooix][ooiy][ooiz];
+            if(IsSolid[ooix][ooiy][ooiz])
             {
-                size_t nix = (size_t)((int)ix + (int)C[k](0) + (int)nx)%nx;
-                size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)ny)%ny;
-                size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)nz)%nz;
-                size_t nnix = (size_t)((int)nix + (int)C[k](0) + (int)nx)%nx;
-                size_t nniy = (size_t)((int)niy + (int)C[k](1) + (int)ny)%ny;
-                size_t nniz = (size_t)((int)niz + (int)C[k](2) + (int)nz)%nz;
-                if(IsSolid[nnix][nniy][nniz])
+                fw[k] = qt*ft[k] + (1-qt) * fto[k];
+                if(IsSolid[oix][oiy][oiz])
                 {
-                    fw[k] = qt*Ftemp[ix][iy][iz][k] + (1-qt) * Ftemp[nix][niy][niz][k];
-                    if(IsSolid[nix][niy][niz])
-                    {
-                        F[ix][iy][iz][k] = Ftemp[ix][iy][iz][Op[k]];
-                    }else{
-                        //Peng et al 2016 Yu's method
-                        double fu = 2.0*W[k]*1.0*dot(C[k],VelP[ix][iy][iz]);
-                        F[ix][iy][iz][k] = 1.0/(1+qt)*(fw[Op[k]]+fu) + qt/(1+qt)*F[nix][niy][niz][k];
-                    }
+                    f[Op[k]] = ft[k];
                 }else{
-                    fw[k] = qt*(1.0+qt)/2.0*Ftemp[ix][iy][iz][k] + (1.0-qt)*(1.0+qt)*Ftemp[nix][niy][niz][k] - qt*(1-qt)/2.0*Ftemp[nnix][nniy][nniz][k];
                     //Peng et al 2016 Yu's method
-                    double fu = 2.0*W[k]*1.0*dot(C[k],VelP[ix][iy][iz]);
-                    F[ix][iy][iz][k] = 2.0/((1+qt)*(2+qt))*(fw[Op[k]]+fu) + 2.0*qt/(1+qt)*F[nix][niy][niz][k] - qt/(2.0+qt)*F[nnix][nniy][nniz][k];
+                    double fu = 2.0*W[k]*1.0*3.0*dot(C[Op[k]],VelP[ix][iy][iz]);
+                    f[Op[k]] = 1.0/(1+qt)*(fw[k]+fu) + qt/(1+qt)*fo[Op[k]];
                 }
-                
-                
+            }else{
+                fw[k] = qt*(1.0+qt)/2.0*ft[k] + (1.0-qt)*(1.0+qt)*fto[k] - qt*(1-qt)/2.0*ftoo[k];
+                //Peng et al 2016 Yu's method
+                double fu = 2.0*W[k]*1.0*3.0*dot(C[Op[k]],VelP[ix][iy][iz]);
+                f[Op[k]] = 2.0/((1+qt)*(2+qt))*(fw[k]+fu) + 2.0*qt/(1+qt)*fo[Op[k]] - qt/(2.0+qt)*foo[Op[k]];
             }
+            
+                
             
         }
         if(!calcF) continue;
@@ -382,50 +355,50 @@ inline void Domain::BounceBackMR(bool calcF = true)
     //     size_t ix = iv(0);
     //     size_t iy = iv(1);
     //     size_t iz = iv(2);
-        double fw[Nneigh];
         for(size_t k=0; k<Nneigh; k++)
         {
             double qt = q[ix][iy][iz][k];
             if(qt<0) continue;
+            double fw[Nneigh];
             size_t oix = (size_t)((int)ix + (int)C[Op[k]](0) + (int)nx)%nx;
             size_t oiy = (size_t)((int)iy + (int)C[Op[k]](1) + (int)ny)%ny;
             size_t oiz = (size_t)((int)iz + (int)C[Op[k]](2) + (int)nz)%nz;
-            
-            if(IsSolid[oix][oiy][oiz])
+        
+            size_t ooix = (size_t)((int)oix + (int)C[Op[k]](0) + (int)nx)%nx;
+            size_t ooiy = (size_t)((int)oiy + (int)C[Op[k]](1) + (int)ny)%ny;
+            size_t ooiz = (size_t)((int)oiz + (int)C[Op[k]](2) + (int)nz)%nz;
+            double *f = F[ix][iy][iz];
+            double *foo = F[ooix][ooiy][ooiz];
+            double *fo = F[oix][oiy][oiz];
+            double *ft = Ftemp[ix][iy][iz];
+            double *fto = Ftemp[oix][oiy][oiz];
+            double *ftoo = Ftemp[ooix][ooiy][ooiz];
+            if(IsSolid[ooix][ooiy][ooiz])
             {
-                size_t nix = (size_t)((int)ix + (int)C[k](0) + (int)nx)%nx;
-                size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)ny)%ny;
-                size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)nz)%nz;
-                size_t nnix = (size_t)((int)nix + (int)C[k](0) + (int)nx)%nx;
-                size_t nniy = (size_t)((int)niy + (int)C[k](1) + (int)ny)%ny;
-                size_t nniz = (size_t)((int)niz + (int)C[k](2) + (int)nz)%nz;
-                
-                if(IsSolid[nnix][nniy][nniz])
+                fw[k] = qt*ft[k] + (1-qt) * fto[k];
+                if(IsSolid[oix][oiy][oiz])
                 {
-                    fw[k] = qt*Ftemp[ix][iy][iz][k] + (1-qt) * Ftemp[nix][niy][niz][k];
-                    if(IsSolid[nix][niy][niz])
-                    {
-                        F[ix][iy][iz][k] = Ftemp[ix][iy][iz][Op[k]];
-                    }else{
-                        //Peng et al 2016 Yu's method
-                        double fu = 2.0*W[k]*1.0*dot(C[k],VelP[ix][iy][iz]);
-                        F[ix][iy][iz][k] = 1.0/(1+qt)*(fw[Op[k]]+fu) + qt/(1+qt)*F[nix][niy][niz][k];
-                    }
+                    f[Op[k]] = ft[k];
                 }else{
-                    double k1 = (1-2.0*qt-2.0*qt*qt)/((1.0+qt)*(1.0+qt));
-                    double k2 = qt*qt/((1.0+qt)*(1.0+qt));
                     //Peng et al 2016 Yu's method
-                    double fu = 0.0;
-                    // double FF =  -(t[ix][iy][iz][k]/Nu)*1.0/(4.0*(1+qt)*(1+qt));
-                    double FF =  -t[ix][iy][iz][k]*(4.0/(3.0*Nu*(1+qt)*(1+qt)))*((Tau-0.5)/(1.0/S(k)-0.5));
-                    F[ix][iy][iz][k] = Ftemp[ix][iy][iz][Op[k]] + k1*Ftemp[nix][niy][niz][Op[k]] + k2*Ftemp[nnix][nniy][nniz][Op[k]] - k1*Ftemp[ix][iy][iz][k] - k2*Ftemp[nix][niy][niz][k] + FF + fu;
-                    
+                    double fu = 2.0*W[k]*1.0*dot(C[Op[k]],VelP[ix][iy][iz]);
+                    f[Op[k]] = 1.0/(1+qt)*(fw[k]+fu) + qt/(1+qt)*fo[Op[k]];
                 }
-                
+            }else{
+                double k1 = (1-2.0*qt-2.0*qt*qt)/((1.0+qt)*(1.0+qt));
+                double k2 = qt*qt/((1.0+qt)*(1.0+qt));
+                double fu = 4.0/((1.0+qt)*(1.0+qt))*W[k]*1.0*3.0*dot(C[Op[k]],VelP[ix][iy][iz]);
+                double FF =  -(t[ix][iy][iz][k]/Nu)*1.0/(4.0*(1+qt)*(1+qt));
+                // std::cout<<k<<" "<<t[ix][iy][iz][k]<<" "<<FF<<" "<<f[Op[k]]<<std::endl;
+                // double FF =  -t[ix][iy][iz][k]*(4.0/(3.0*Nu*(1+qt)*(1+qt)))*((Tau-0.5)/(1.0/S(k)-0.5));
+                f[Op[k]] = ft[k] + k1*fto[k] + k2*ftoo[k] - k1*ft[Op[k]] - k2*fto[Op[k]] + FF + fu;
                 
             }
             
+                
+            
         }
+       
         if(!calcF) continue;
         Vec3_t Flbmt(0,0,0);
         for(size_t k=0; k<Nneigh; ++k)
@@ -467,22 +440,23 @@ inline void Domain::BounceBackCLI(bool calcF = true)
         {
             double qt = q[ix][iy][iz][k];
             if(qt<0) continue;
+            double fw[Nneigh];
             size_t oix = (size_t)((int)ix + (int)C[Op[k]](0) + (int)nx)%nx;
             size_t oiy = (size_t)((int)iy + (int)C[Op[k]](1) + (int)ny)%ny;
             size_t oiz = (size_t)((int)iz + (int)C[Op[k]](2) + (int)nz)%nz;
-            size_t nix = (size_t)((int)ix + (int)C[k](0) + (int)nx)%nx;
-            size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)ny)%ny;
-            size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)nz)%nz;
+            double *f = F[ix][iy][iz];
+            double *fo = F[oix][oiy][oiz];
+            double *ft = Ftemp[ix][iy][iz];
+            double *fto = Ftemp[oix][oiy][oiz];
+            
+            
             if(IsSolid[oix][oiy][oiz])
             {
-                if(IsSolid[nix][niy][niz])
-                {
-                    F[ix][iy][iz][k] = Ftemp[ix][iy][iz][Op[k]];
-                }else{
-                    
-                    F[ix][iy][iz][k] = (1.0-2.0*qt)/(1+2.0*qt)*Ftemp[nix][niy][niz][Op[k]] + Ftemp[ix][iy][iz][Op[k]] - (1.0-2.0*qt)/(1.0+2.0*qt)*Ftemp[ix][iy][iz][k];
-
-                }
+                f[Op[k]] = ft[k];
+            }else{
+                
+                double fu = 2.0*W[k]*1.0*dot(C[Op[k]],VelP[ix][iy][iz]);
+                f[Op[k]] = (1.0-2.0*qt)/(1+2.0*qt)*fto[k] + ft[k] - (1.0-2.0*qt)/(1.0+2.0*qt)*ft[Op[k]];
                 
             }
             
