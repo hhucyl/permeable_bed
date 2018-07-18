@@ -135,6 +135,7 @@ public:
     void   BounceBackQIBB(bool calcF = true);
     void   BounceBackCLI(bool calcF = true);
     void   BounceBackMR(bool calcF = true);
+    void   BoundaryGamma();
     void   CalcProps();
     void   Initialize(iVec3_t idx, double Rho, Vec3_t & Vel);           ///< Initialize each cell with a given density and velocity
     double Feq(size_t k, double Rho, Vec3_t & Vel);                               ///< The equilibrium function
@@ -206,6 +207,9 @@ public:
     Vec3_t ***VelP;
     Vec3_t ***Flbm;
     double ***Gamma;
+    double we;
+    double wej;
+    double wxx;
 
 };
 
@@ -333,7 +337,9 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
             // S = 0.0,1.0/tau,1.0/tau,0.0,s,0.0,s,0.0,s,1.0/tau,1.0/tau,1.0/tau,1.0/tau,1.0/tau,s;
             S = 0.0,s,s,0.0,s,0.0,s,0.0,s,1.0/tau,s,1.0/tau,s,1.0/tau,1.0/tau,1.0/tau,s,s,s;
             ptr2collide = &LBM::Domain::CollideMRT;
-            
+            we = 3.0;
+            wej = -11.0/2.0;
+            wxx = -0.5;
         }
        
         

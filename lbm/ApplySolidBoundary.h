@@ -569,6 +569,48 @@ inline void Domain::AddSphereG(Vec3_t &pos, double R)
     
 }
 
+inline void Domain::BoundaryGamma()
+{
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for(size_t ix=0; ix<nx; ++ix)
+    for(size_t iy=0; iy<ny; ++iy)
+    for(size_t iz=0; iz<nz; ++iz)  
+    {
+        
+        double gamma  = Gamma[ix][iy][iz];
+        if(gamma<1e-12) continue;
+        
+        Vec3_t VelPt = VelP[ix][iy][iz];
+        double rho = Rho[ix][iy][iz];
+        double Bn  = (gamma*(Tau-0.5))/((1.0-gamma)+(Tau-0.5));
+        //double Bn  = gamma;
+        //double Bn  = floor(gamma);
+        
+        Vec3_t Flbmt(0.0,0.0,0.0);
+        
+        for (size_t k=0;k<Nneigh;k++)
+        {
+            double Fvpp     = Feq(Op[k],rho,VelPt);
+            double Fvp      = Feq(k    ,rho,VelPt);
+            double Omega    = F[ix][iy][iz][Op[k]] - Fvpp - (F[ix][iy][iz][k] - Fvp);
+            //cell->Omeis[k] += Omega;
+            //cell->Omeis[k] += gamma*Omega;
+            // cell->Omeis[k] = Omega;
+            Omeis[ix][iy][iz][k] = Omega;
+            Flbmt += -Bn*Omega*C[k];
+        }
+        
+        Flbm[ix][iy][iz] = Flbmt;
+    }
+    
+    
+}
+
 
 
 

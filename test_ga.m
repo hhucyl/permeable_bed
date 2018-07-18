@@ -2,9 +2,14 @@ clear
 clc
 prefix_name = {'/home/pzhang/chen/permeable_bed/'};
 middle_name = {'test_line_'};
-num = 1:135;
+num = 1:300;
 q = 0.25;
-tau = 0.50001;
+if q<0.5
+    ga = 0.5 -q;
+else
+    ga = 1.5 -q;
+end
+tau = 0.8;
 nu = (tau-0.5)/3.0;
 for i = 1:numel(num)
 %     i = 2

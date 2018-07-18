@@ -27,6 +27,9 @@ SET(PROGS
     test_cd_bb
     test_sc_ga
     test_sc_bb
+    test_sphere_bb
+    test_bb
+    test_ga
 )
 
 FOREACH(var ${PROGS})

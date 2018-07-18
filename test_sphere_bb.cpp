@@ -1,5 +1,5 @@
 #include "./lbm/Domain.h"
-
+#include <fstream>
 
 struct myUserData
 {
@@ -104,19 +104,14 @@ int main () try
         throw new Fatal("Collide Type is NOT RIGHT!!!!!");    
     }   
     size_t Nproc = 8;
-    size_t h = 30;
+    size_t h = 100;
     size_t nx = h;
     size_t ny = h;
     size_t nz = h;
     double dx = 1.0;
     double dt = 1.0;
-    double XX = 0.9;//x = (c/cmax)^1/3
-    double cmax = M_PI/6.0;//for bcc cmax = 3^0.5*pi/8
-    double R = std::pow(XX*XX*XX*cmax*nx*nx*nx/(4.0/3.0*M_PI),1.0/3.0);//x = (c/cmax)^1/3 c = Vs/V
-    std::cout<<"R = "<<R<<std::endl;
-    double ddx = 0.0;
-    Vec3_t pos(ddx,ddx,ddx);
-    // Vec3_t pos(200.5,299.5,0);
+    double R = 10.0;
+    Vec3_t pos(0.0,0.0,0.0);
     double nu = (0.6-0.5)/3.0;
     //nu = 1.0/30.0;
     LBM::Domain dom(D3Q19,MRT, nu, iVec3_t(nx,ny,nz),dx,dt);
@@ -129,21 +124,22 @@ int main () try
     dom.Nproc = Nproc;
 
 
-    dom.AddSphereQ(pos,R);
-    pos = nx-1-ddx,0+ddx,0+ddx;
-    dom.AddSphereQ(pos,R);
-    pos = 0+ddx,ny-1-ddx,0+ddx;
-    dom.AddSphereQ(pos,R);
-    pos = nx-1-ddx, ny-1-ddx, 0+ddx;
-    dom.AddSphereQ(pos,R);
-    pos = 0.0+ddx,0.0+ddx,nz-1-ddx;
-    dom.AddSphereQ(pos,R);
-    pos = nx-1-ddx,0+ddx,nz-1-ddx;
-    dom.AddSphereQ(pos,R);
-    pos = 0+ddx,ny-1-ddx,nz-1-ddx;
-    dom.AddSphereQ(pos,R);
-    pos = nx-1-ddx, ny-1-ddx, nz-1-ddx;
-    dom.AddSphereQ(pos,R);             
+    std::fstream ifile("sphere.txt",std::ios::in);
+	int N = 0;
+	if(!ifile.fail())
+	{
+		ifile>>N;
+		for(size_t i=0;i<N;++i)
+		{
+			double x;
+			double y;
+			double z;
+    		ifile>>x>>y>>z;
+            pos = x,y,z;
+            dom.AddSphereQ(pos,R);
+			
+		}
+	}          
 
     //dom.Isq = true;
     // dom.IsF = false;
@@ -160,7 +156,7 @@ int main () try
 
     double Tf = 1e5;
     double dtout = 100;
-    char const * TheFileKey = "test_sc";
+    char const * TheFileKey = "test_sphere";
     //solving
     dom.StartSolve();
     double tout = 0;
@@ -178,10 +174,8 @@ int main () try
             Report(dom,&my_dat); 
             tout += dtout;
         }
-        // (dom.*dom.ptr2collide)();
-        dom.CollideMRTMR();
+        (dom.*dom.ptr2collide)();
         dom.Stream();
-        // dom.BounceBackLIBB(false);
         dom.BounceBackLIBB(false);
         dom.CalcProps();
         dom.Time += 1;

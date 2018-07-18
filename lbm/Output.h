@@ -252,6 +252,11 @@ void Domain::WriteXDMF(char const * FileKey)
         oss << "        " << fn.CStr() <<":/Velocity_" << j << "\n";
         oss << "       </DataItem>\n";
         oss << "     </Attribute>\n";
+        oss << "     <Attribute Name=\"Velocity_P_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
+        oss << "       <DataItem Dimensions=\"" << Nx << " " << Ny << " " << Nz << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
+        oss << "        " << fn.CStr() <<":/Velocity_P_" << j << "\n";
+        oss << "       </DataItem>\n";
+        oss << "     </Attribute>\n";
         oss << "     <Attribute Name=\"BForce_" << j << "\" AttributeType=\"Vector\" Center=\"Node\">\n";
         oss << "       <DataItem Dimensions=\"" << Nz << " " << Ny << " " << Nx << " 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n";
         oss << "        " << fn.CStr() <<":/BForce_" << j << "\n";

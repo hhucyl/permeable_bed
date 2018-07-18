@@ -279,7 +279,7 @@ inline void Domain::MeqD3Q19(double *m, double rho, Vec3_t &vel)
 {
     m[ 0] = S( 0)*( m[ 0] - rho );
     m[ 1] = S( 1)*( m[ 1] - (-11.0*rho + 19.0 * dot(vel,vel)) );
-    m[ 2] = S( 2)*( m[ 2] - (3.0*rho - 11.0/2.0*rho*dot(vel,vel)) );
+    m[ 2] = S( 2)*( m[ 2] - (we*rho + wej*rho*dot(vel,vel)) );
     m[ 3] = 0.0;
     m[ 4] = S( 4)*( m[ 4] - (-2.0/3.0*rho*vel(0)) );
     m[ 5] = 0.0;
@@ -287,7 +287,7 @@ inline void Domain::MeqD3Q19(double *m, double rho, Vec3_t &vel)
     m[ 7] = 0.0;
     m[ 8] = S( 8)*( m[ 8] - (-2.0/3.0*rho*vel(2)) );
     m[ 9] = S( 9)*( m[ 9] - (2.0*rho*vel(0)*vel(0)-rho*vel(1)*vel(1)-rho*vel(2)*vel(2)) );
-    m[10] = S(10)*( m[10] - (-0.5*(2.0*rho*vel(0)*vel(0)-rho*vel(1)*vel(1)-rho*vel(2)*vel(2))) );
+    m[10] = S(10)*( m[10] - (wxx*(2.0*rho*vel(0)*vel(0)-rho*vel(1)*vel(1)-rho*vel(2)*vel(2))) );
     m[11] = S(11)*( m[11] - rho*(vel(1)*vel(1)-vel(2)*vel(2)) );
     m[12] = S(12)*( m[12] - (-0.5*rho*(vel(1)*vel(1)-vel(2)*vel(2))) );
     m[13] = S(13)*( m[13] - rho*vel(0)*vel(1) );

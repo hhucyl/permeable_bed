@@ -1,0 +1,36 @@
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 50000[0m
+[1;34m  Elapsed time       = 0.035927s  CPU 0.036000s  (17:40:17 => 17:40:17)[0m
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- SBB ---
+--- LIBB ---
+[01;34m---Elapsed Time = 0.748621 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 50000[0m
+[1;34m  Elapsed time       = 0.024672s  CPU 0.024000s  (17:40:17 => 17:40:17)[0m
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- SBB ---
+--- QIBB ---
+[01;34m---Elapsed Time = 0.759448 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 50000[0m
+[1;34m  Elapsed time       = 0.023123s  CPU 0.024000s  (17:40:17 => 17:40:17)[0m
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- SBB ---
+--- MR ---
+[01;34m---Elapsed Time = 0.672440 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 50000[0m
+[1;34m  Elapsed time       = 0.022964s  CPU 0.024000s  (17:40:17 => 17:40:17)[0m
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- SBB ---
+--- CLI ---
+[01;34m---Elapsed Time = 0.675443 s---[0m
