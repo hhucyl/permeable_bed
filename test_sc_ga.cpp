@@ -7,6 +7,7 @@ struct myUserData
     double g;
     double nu;
     double R;
+    int bbtype;
 };
 
 void Report(LBM::Domain &dom, void *UD)
@@ -19,7 +20,9 @@ void Report(LBM::Domain &dom, void *UD)
     if(dom.Time <1e-6)
     {
         String fs;
-        fs.Printf("%s.out","permeability");
+        // fs.Printf("%s.out","permeability");
+        fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
+        
         dat.oss_ss.open(fs.CStr(),std::ios::out);
         dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"K\n";
     }else{
@@ -89,7 +92,7 @@ void Initial(LBM::Domain &dom, double rho, Vec3_t &v0,  Vec3_t &g0)
     // dom.Rho0 = rho;//very important
 }
 
-void addspheres(LBM::Domain &dom, Vec3_t &pos,double R, double ddx)
+void addspheres1(LBM::Domain &dom, Vec3_t &pos,double R, double ddx)
 {
     size_t nx = dom.Ndim(0);
     size_t ny = dom.Ndim(1);
@@ -110,9 +113,18 @@ void addspheres(LBM::Domain &dom, Vec3_t &pos,double R, double ddx)
     pos = nx-1-ddx, ny-1-ddx, nz-1-ddx;
     dom.AddSphereG(pos,R);  
 }
+
+void addspheres2(LBM::Domain &dom, Vec3_t &pos,double R, double ddx)
+{
+    size_t nx = dom.Ndim(0);
+    size_t ny = dom.Ndim(1);
+    size_t nz = dom.Ndim(2);
+    dom.AddSphereG(pos,R);
+}
+
 //something to make compare simple
   
-int main () try
+int main (int argc, char **argv) try
 {
     size_t collidetype = 1;
     CollideMethod methodc = MRT;
@@ -129,7 +141,14 @@ int main () try
     }
     
     size_t Nproc = 8;
-    size_t h = 30; 
+    size_t h = 30;
+    int bbtype = -1;
+    double tau = 0.6;
+    if(argc>=2) bbtype = atoi(argv[1]); 
+    if(argc>=3) h = atoi(argv[2]);
+    if(argc>=4) tau = atof(argv[3]);     
+    if(argc>=5) Nproc = atoi(argv[4]); 
+
     size_t nx = h;
     size_t ny = h;
     size_t nz = h;
@@ -139,20 +158,28 @@ int main () try
     double cmax = M_PI/6.0;//for bcc cmax = 3^0.5*pi/8
     double R = std::pow(XX*XX*XX*cmax*nx*nx*nx/(4.0/3.0*M_PI),1.0/3.0);//x = (c/cmax)^1/3 c = Vs/V
     std::cout<<"R = "<<R<<std::endl;
-    double ddx = -0.5;
-    Vec3_t pos(ddx,ddx,ddx);
+    double ddx = 0.0;
+    // Vec3_t pos(ddx,ddx,ddx);
+    Vec3_t pos(nx/2.0-1,ny/2.0-1,nz/2.0-1);
     // Vec3_t pos(200.5,299.5,0);
-    double nu = (0.6-0.5)/3.0;
+    double nu = (tau-0.5)/3.0;
     //nu = 1.0/30.0;
     LBM::Domain dom(D3Q19,methodc, nu, iVec3_t(nx,ny,nz),dx,dt);
     myUserData my_dat;
     dom.UserData = &my_dat;
     my_dat.nu = nu;
+    my_dat.bbtype = bbtype;
     my_dat.g = 2e-5;
     my_dat.R = R;
     Vec3_t g0(0.0,0.0,my_dat.g);
     dom.Nproc = Nproc;
-
+    if(tau<0.53)
+    {
+        dom.S = 0, 1.19, 1.4, 0, 1.2, 0, 1.2, 0, 1.2, 1/tau, 1.4, 1/tau, 1.4, 1/tau, 1/tau, 1/tau, 1.98, 1.98, 1.98;
+        dom.we = 0.0;
+        dom.wej = -475.0/63.0;
+        dom.wxx = 0;
+    }
 
               
 
@@ -166,11 +193,11 @@ int main () try
     Vec3_t v0(0.0,0.0,0.0);
     Initial(dom,rho,v0,g0);
     
-
+    addspheres2(dom,pos,R,ddx);
     
 
-    double Tf = 1e5;
-    double dtout = 1000;
+    double Tf = 200;
+    double dtout = 1;
     char const * TheFileKey = "test_sc";
     //solving
     dom.StartSolve();
@@ -189,7 +216,9 @@ int main () try
             Report(dom,&my_dat); 
             tout += dtout;
         }
-        addspheres(dom,pos,R,ddx);
+        dom.BoundaryGamma();
+        // addspheres2(dom,pos,R,ddx);
+        
         // dom.CollideSRT(ptr2meq);
         (dom.*dom.ptr2collide)();
         

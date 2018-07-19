@@ -7,21 +7,26 @@ struct myUserData
     double g;
     double nu;
     double R;
+    double K;
+    double Tf;
+    size_t bbtype;
 };
 
-void Report(LBM::Domain &fluid_dom, void *UD)
+void Report(LBM::Domain &dom, void *UD)
 {
     myUserData &dat = (*static_cast<myUserData *> (UD));
-    size_t nx = fluid_dom.Ndim(0);
-    size_t ny = fluid_dom.Ndim(1);
-    size_t nz = fluid_dom.Ndim(2);
-    double dx = fluid_dom.dx;
-    if(fluid_dom.Time <1e-6)
+    size_t nx = dom.Ndim(0);
+    size_t ny = dom.Ndim(1);
+    size_t nz = dom.Ndim(2);
+    double dx = dom.dx;
+    if(dom.Time <1e-6)
     {
         String fs;
-        fs.Printf("%s.out","permeability");
+        // fs.Printf("%s.out","permeability");
+        fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
+        
         dat.oss_ss.open(fs.CStr(),std::ios::out);
-        dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"K\n";
+        dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"r"<<Util::_8s<<"K\n";
     }else{
         size_t index = 0;
         // double P1 = 0;
@@ -29,9 +34,9 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         // for(size_t ix=0;ix<nx;++ix)
         // for(size_t iy=0;iy<ny;++iy)
         // {
-        //     // if(fluid_dom.IsSolid[ix][iy][index]) continue;
+        //     // if(dom.IsSolid[ix][iy][index]) continue;
         //     // num += 1;
-        //     P1 += fluid_dom.Rho[ix][iy][index]/3.0;
+        //     P1 += dom.Rho[ix][iy][index]/3.0;
         // }
         // P1 /= nx*ny;
         // index = nz -1;
@@ -41,9 +46,9 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         // for(size_t ix=0;ix<nx;++ix)
         // for(size_t iy=0;iy<ny;++iy)
         // {
-        //     // if(fluid_dom.IsSolid[ix][iy][index]) continue;
+        //     // if(dom.IsSolid[ix][iy][index]) continue;
         //     // num +=1.0;
-        //     P2 += fluid_dom.Rho[ix][iy][index]/3.0;
+        //     P2 += dom.Rho[ix][iy][index]/3.0;
         // }
         // P2 /= nx*ny;
         double U = 0;
@@ -52,10 +57,10 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         for(size_t iy=0;iy<ny;++iy)
         for(size_t iz=0;iz<nz;++iz)
         {
-            // if(fluid_dom.IsSolid[ix][iy][iz]) continue;
+            // if(dom.IsSolid[ix][iy][iz]) continue;
             // num += 1.0;
             Vec3_t e(0,0,1);
-            U += dot(fluid_dom.Vel[ix][iy][0],e);
+            U += dot(dom.Vel[ix][iy][0],e);
         }
         U /= nx*ny*nz;
         // U /= num;
@@ -65,7 +70,14 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         double K = (U*dat.nu)/(dat.g);
         // double K = 8.0*dat.nu*nz*nz*U/(9*nz*(P1-P2));
         K = (6.0*M_PI*dat.R*K)/(nx*ny*nz);
-        dat.oss_ss<<Util::_10_6<<fluid_dom.Time<<Util::_8s<<U<<Util::_8s<<K<<std::endl;
+        double r = std::fabs(K-dat.K)/dat.K;
+        dat.oss_ss<<Util::_10_6<<dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
+        
+        if(r<1e-5)
+        {
+            dom.Time = dat.Tf;
+        }
+        dat.K = K;
     }
 }
 void Initial(LBM::Domain &dom, double rho, Vec3_t &v0,  Vec3_t &g0)
@@ -88,7 +100,38 @@ void Initial(LBM::Domain &dom, double rho, Vec3_t &v0,  Vec3_t &g0)
     // dom.Rho0 = rho;//very important
 }
 
-int main () try
+void addspheres1(LBM::Domain &dom, Vec3_t &pos,double R, double ddx)
+{
+    size_t nx = dom.Ndim(0);
+    size_t ny = dom.Ndim(1);
+    size_t nz = dom.Ndim(2);
+    dom.AddSphereQ(pos,R);
+    pos = nx-1-ddx,0+ddx,0+ddx;
+    dom.AddSphereQ(pos,R);
+    pos = 0+ddx,ny-1-ddx,0+ddx;
+    dom.AddSphereQ(pos,R);
+    pos = nx-1-ddx, ny-1-ddx, 0+ddx;
+    dom.AddSphereQ(pos,R);
+    pos = 0.0+ddx,0.0+ddx,nz-1-ddx;
+    dom.AddSphereQ(pos,R);
+    pos = nx-1-ddx,0+ddx,nz-1-ddx;
+    dom.AddSphereQ(pos,R);
+    pos = 0+ddx,ny-1-ddx,nz-1-ddx;
+    dom.AddSphereQ(pos,R);
+    pos = nx-1-ddx, ny-1-ddx, nz-1-ddx;
+    dom.AddSphereQ(pos,R);  
+}
+
+
+void addspheres2(LBM::Domain &dom, Vec3_t &pos,double R, double ddx)
+{
+    size_t nx = dom.Ndim(0);
+    size_t ny = dom.Ndim(1);
+    size_t nz = dom.Ndim(2);
+    dom.AddSphereQ(pos,R);
+}
+
+int main (int argc, char **argv) try
 {
     size_t collidetype = 1;
     CollideMethod methodc = MRT;
@@ -105,51 +148,73 @@ int main () try
     }   
     size_t Nproc = 8;
     size_t h = 30;
+    double tau = 0.8;
+    size_t bbtype = 1;
+    if(argc>=2) bbtype = atoi(argv[1]); 
+    if(argc>=3) h = atoi(argv[2]);
+    if(argc>=4) tau = atof(argv[3]);     
+    if(argc>=5) Nproc = atoi(argv[4]); 
+
+    
+
     size_t nx = h;
     size_t ny = h;
     size_t nz = h;
     double dx = 1.0;
     double dt = 1.0;
-    double XX = 0.9;//x = (c/cmax)^1/3
+    double XX = 0.85;//x = (c/cmax)^1/3
     double cmax = M_PI/6.0;//for bcc cmax = 3^0.5*pi/8
     double R = std::pow(XX*XX*XX*cmax*nx*nx*nx/(4.0/3.0*M_PI),1.0/3.0);//x = (c/cmax)^1/3 c = Vs/V
     std::cout<<"R = "<<R<<std::endl;
     double ddx = 0.0;
-    Vec3_t pos(ddx,ddx,ddx);
+    // Vec3_t pos(ddx,ddx,ddx);
+    Vec3_t pos(nx/2.0-1,ny/2.0-1,nz/2.0-1);
     // Vec3_t pos(200.5,299.5,0);
-    double nu = (0.6-0.5)/3.0;
+    double nu = (tau-0.5)/3.0;
     //nu = 1.0/30.0;
     LBM::Domain dom(D3Q19,MRT, nu, iVec3_t(nx,ny,nz),dx,dt);
+    if(bbtype == 0)
+    {
+        dom.MethodB = SBB;
+    }else if(bbtype == 1){
+        dom.MethodB = LIBB;        
+    }else if(bbtype == 2){
+        dom.MethodB = QIBB;
+    }else if(bbtype == 3){
+        dom.MethodB = MR;
+    }else if(bbtype == 4){
+        dom.MethodB = CLI;            
+    }else{
+        throw new Fatal("Collide Type is NOT RIGHT!!!!!");    
+    }
+    dom.SetBounceBack();
+    if(tau<0.53)
+    {
+        dom.S = 0, 1.19, 1.4, 0, 1.2, 0, 1.2, 0, 1.2, 1/tau, 1.4, 1/tau, 1.4, 1/tau, 1/tau, 1/tau, 1.98, 1.98, 1.98;
+        dom.we = 0.0;
+        dom.wej = -475.0/63.0;
+        dom.wxx = 0;
+    }
+
     myUserData my_dat;
     dom.UserData = &my_dat;
     my_dat.nu = nu;
+    my_dat.bbtype = bbtype;
     my_dat.g = 2e-5;
     my_dat.R = R;
+    my_dat.K = 0.0;
     Vec3_t g0(0.0,0.0,my_dat.g);
     dom.Nproc = Nproc;
 
 
-    dom.AddSphereQ(pos,R);
-    pos = nx-1-ddx,0+ddx,0+ddx;
-    dom.AddSphereQ(pos,R);
-    pos = 0+ddx,ny-1-ddx,0+ddx;
-    dom.AddSphereQ(pos,R);
-    pos = nx-1-ddx, ny-1-ddx, 0+ddx;
-    dom.AddSphereQ(pos,R);
-    pos = 0.0+ddx,0.0+ddx,nz-1-ddx;
-    dom.AddSphereQ(pos,R);
-    pos = nx-1-ddx,0+ddx,nz-1-ddx;
-    dom.AddSphereQ(pos,R);
-    pos = 0+ddx,ny-1-ddx,nz-1-ddx;
-    dom.AddSphereQ(pos,R);
-    pos = nx-1-ddx, ny-1-ddx, nz-1-ddx;
-    dom.AddSphereQ(pos,R);             
+               
 
     //dom.Isq = true;
     // dom.IsF = false;
     // dom.IsFt = false;
     //bounndary
     // dom.AddDisk(pos,R);
+    addspheres2(dom,pos,R,ddx);
     //initial
     double rho = 1.0;
     Vec3_t v0(0.0,0.0,0.0);
@@ -158,8 +223,9 @@ int main () try
 
     
 
-    double Tf = 1e5;
-    double dtout = 100;
+    double Tf = 2;
+    my_dat.Tf = Tf;
+    double dtout = 1;
     char const * TheFileKey = "test_sc";
     //solving
     dom.StartSolve();
@@ -169,11 +235,11 @@ int main () try
         if (dom.Time>=tout)
         {
             
-            String fn;
-            fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            // String fn;
+            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            dom.WriteXDMF(fn.CStr());
-            dom.idx_out++;
+            // dom.WriteXDMF(fn.CStr());
+            // dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;
@@ -181,8 +247,9 @@ int main () try
         // (dom.*dom.ptr2collide)();
         dom.CollideMRTMR();
         dom.Stream();
-        // dom.BounceBackLIBB(false);
-        dom.BounceBackLIBB(false);
+        // dom.BounceBackQIBB(false);
+        (dom.*dom.ptr2bb)(true);
+        
         dom.CalcProps();
         dom.Time += 1;
     }
