@@ -119,8 +119,8 @@ void Report(LBM::Domain &dom, void *UD)
     if(dom.Time <1e-6)
     {
         String fs;
-        fs.Printf("%s.out","permeability");
-        // fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
+        // fs.Printf("%s.out","permeability");
+        fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
         
         dat.oss_ss.open(fs.CStr(),std::ios::out);
         dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"r"<<Util::_8s<<"K\n";
@@ -148,11 +148,11 @@ void Report(LBM::Domain &dom, void *UD)
         double r = std::fabs(K-dat.K)/dat.K;
         dat.oss_ss<<Util::_10_6<<dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
         
-        // if(r<1e-5)
-        // {
-        //     dom.Time = dat.Tf;
-        // }
-        // dat.K = K;
+        if(r<1e-5)
+        {
+            dom.Time = dat.Tf;
+        }
+        dat.K = K;
     }
 }
 
@@ -164,13 +164,20 @@ int main (int argc, char **argv) try
     size_t Nproc = 12;
     double Tf = 1e5;
     size_t h = 30;
-    size_t h1 = 30; 
+    size_t h1 = 30;
+    int bbtype = -2;
+    double tau = 0.6;
+    if(argc>=2) bbtype = atoi(argv[1]); 
+    if(argc>=3) h = atoi(argv[2]);
+    if(argc>=4) tau = atof(argv[3]);     
+    if(argc>=5) Nproc = atoi(argv[4]);  
     size_t nx = h;
     size_t ny = h;
     size_t nz = h;//0.12/0.038 = 3.1579
     double dx = 1.0;
     double dt = 1.0;
     double nu = 0.1;
+    nu = (tau-0.5)/3.0;
     Vec3_t pos(nx/2-1,ny/2-1,nz/2-1);
     double XX = 0.85;//x = (c/cmax)^1/3
     double cmax = M_PI/6.0;//for bcc cmax = 3^0.5*pi/8
@@ -192,7 +199,18 @@ int main (int argc, char **argv) try
     my_dat.u = 0.04;
     my_dat.g = 2e-5;
     my_dat.Tf = Tf;
+    my_dat.K = 0.0;
     my_dat.nu = nu;
+    my_dat.bbtype = bbtype;
+
+    if(tau<0.53)
+    {
+        dom.S = 0, 1.19, 1.4, 0, 1.2, 0, 1.2, 0, 1.2, 1/tau, 1.4, 1/tau, 1.4, 1/tau, 1/tau, 1/tau, 1.98, 1.98, 1.98;
+        dom.we = 0.0;
+        dom.wej = -475.0/63.0;
+        dom.wxx = 0;
+    }
+
     //initial
     Initial(dom,rho0,v0,g0);
     std::fstream ifile("Nodes_sc.txt",std::ios::in);
@@ -225,8 +243,8 @@ int main (int argc, char **argv) try
 	}
     std::cout<<dom.dS[0]<<std::endl; 
 
-    Tf = 1e5;
-    double dtout = 1e2;
+    Tf = 2;
+    double dtout = 1;
     char const * TheFileKey = "test_ibm";
     //solving
     dom.StartTime = std::clock();
@@ -238,12 +256,12 @@ int main (int argc, char **argv) try
         if (dom.Time>=tout)
         {
             
-            String fn;
+            // String fn;
             // fn.Printf("%s_%d_%g_%04d", TheFileKey,bbtype, tau,dom.idx_out);
-            fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            dom.WriteXDMF(fn.CStr());
-            dom.idx_out++;
+            // dom.WriteXDMF(fn.CStr());
+            // dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;

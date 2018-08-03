@@ -22,8 +22,8 @@ void Report(LBM::Domain &dom, void *UD)
     if(dom.Time <1e-6)
     {
         String fs;
-        fs.Printf("%s.out","permeability");
-        // fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
+        // fs.Printf("%s.out","permeability");
+        fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
         
         dat.oss_ss.open(fs.CStr(),std::ios::out);
         dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"r"<<Util::_8s<<"K\n";
@@ -222,9 +222,9 @@ int main (int argc, char **argv) try
 
     
 
-    double Tf = 1e5;
+    double Tf = 2;
     my_dat.Tf = Tf;
-    double dtout = 1e2;
+    double dtout = 1;
     char const * TheFileKey = "test_sc";
     //solving
     dom.StartSolve();
@@ -234,11 +234,11 @@ int main (int argc, char **argv) try
         if (dom.Time>=tout)
         {
             
-            String fn;
-            fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            // String fn;
+            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            dom.WriteXDMF(fn.CStr());
-            dom.idx_out++;
+            // dom.WriteXDMF(fn.CStr());
+            // dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;

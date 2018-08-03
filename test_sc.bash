@@ -10,4 +10,5 @@ do
     ./test_sc_bb 3 30 $tau 12 >> log.txt 2>&1
     ./test_sc_bb 4 30 $tau 12 >> log.txt 2>&1
     ./test_sc_ga -1 30 $tau 12 >> log.txt 2>&1
+    ./test_sc_ibm -2 30 $tau 12 >> log.txt 2>&1
 done

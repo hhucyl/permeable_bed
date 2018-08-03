@@ -8,6 +8,8 @@ struct myUserData
     double nu;
     double R;
     int bbtype;
+    double K;
+    double Tf;
 };
 
 void Report(LBM::Domain &dom, void *UD)
@@ -20,11 +22,11 @@ void Report(LBM::Domain &dom, void *UD)
     if(dom.Time <1e-6)
     {
         String fs;
-        fs.Printf("%s.out","permeability");
-        // fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
+        // fs.Printf("%s.out","permeability");
+        fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
         
         dat.oss_ss.open(fs.CStr(),std::ios::out);
-        dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"K\n";
+        dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"r"<<Util::_8s<<"K\n";
     }else{
         size_t index = 0;
         // double P1 = 0;
@@ -67,8 +69,15 @@ void Report(LBM::Domain &dom, void *UD)
         // double K = -(U*dat.nu)/((P2-P1)/((double)nz) - dat.g);
         double K = (U*dat.nu)/(dat.g);
         // double K = 8.0*dat.nu*nz*nz*U/(9*nz*(P1-P2));
+        
         K = (6.0*M_PI*dat.R*K)/(nx*ny*nz);
-        dat.oss_ss<<Util::_10_6<<dom.Time<<Util::_8s<<U<<Util::_8s<<K<<std::endl;
+        double r = std::fabs(K-dat.K)/dat.K;
+        dat.oss_ss<<Util::_10_6<<dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
+        if(r<1e-5)
+        {
+            dom.Time = dat.Tf;
+        }
+        dat.K = K;
     }
 }
 void Initial(LBM::Domain &dom, double rho, Vec3_t &v0,  Vec3_t &g0)
@@ -171,6 +180,7 @@ int main (int argc, char **argv) try
     my_dat.bbtype = bbtype;
     my_dat.g = 2e-5;
     my_dat.R = R;
+    my_dat.K = 0;
     Vec3_t g0(0.0,0.0,my_dat.g);
     dom.Nproc = Nproc;
     if(tau<0.53)
@@ -196,8 +206,10 @@ int main (int argc, char **argv) try
     addspheres2(dom,pos,R,ddx);
     
 
-    double Tf = 1e5;
-    double dtout = 1e2;
+    double Tf = 2;
+    my_dat.Tf = Tf;
+    
+    double dtout = 1;
     char const * TheFileKey = "test_sc";
     //solving
     dom.StartSolve();
