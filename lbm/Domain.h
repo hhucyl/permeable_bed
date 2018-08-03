@@ -118,11 +118,16 @@ public:
     iVec3_t               Ndim,   ///< Cell divisions per side
     double                dx,     ///< Space spacing
     double                dt);    ///< Time step
-
+    // ~Domain();
     //Methods
     
     void   CollideMRT();///< The collide step of LBM with MRT                                  
     void   CollideMRTMR();///< The collide step of LBM with MRT                                  
+    void   CollideMRTLES();///< The collide step of LBM with MRT                        
+    
+    void   CollideSRTIBM();
+    void   CollideMRTIBM();
+
     void   MeqD2Q9(double *m, double rho, Vec3_t &vel);                      
     void   MeqD3Q15(double *m, double rho, Vec3_t &vel);             
     void   MeqD3Q19(double *m, double rho, Vec3_t &vel);             
@@ -136,6 +141,10 @@ public:
     void   BounceBackCLI(bool calcF = true);
     void   BounceBackMR(bool calcF = true);
     void   BoundaryGamma();
+    double KernelIBM(double r, double x);
+    void   ApplyIBM2D(Vec3_t &pos, double R);
+    void   ApplyIBM3D(Vec3_t &pos, double R);
+    void   GenPts(Vec3_t &pos, double R, int N);
     void   CalcProps();
     void   Initialize(iVec3_t idx, double Rho, Vec3_t & Vel);           ///< Initialize each cell with a given density and velocity
     double Feq(size_t k, double Rho, Vec3_t & Vel);                               ///< The equilibrium function
@@ -197,6 +206,7 @@ public:
     size_t       Nl;                          ///< Number of lattices (fluids)
     double       Sc;                          ///< Smagorinsky constant
     double       Nu;
+    double       Rho0;
     LBMethod     Method;
     CollideMethod MethodC;
     BounceBackMethod MethodB;
@@ -210,7 +220,8 @@ public:
     double we;
     double wej;
     double wxx;
-
+    std::vector<Vec3_t> points; ///IBM
+    std::vector<double> dS;     ///IBM
 };
 
 
@@ -240,6 +251,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
     Sc          = 0.17;
     Nl          = 1;
     Ndim        = TheNdim;
+    Rho0        = 1.0;
     Ncells      = Ndim(0)*Ndim(1)*Ndim(2);
     IsFirstTime = true;
     Method = TheMethod;

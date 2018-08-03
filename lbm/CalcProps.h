@@ -16,8 +16,8 @@ inline void Domain::CalcProps()
         //BForce[ix][iy][iz] = OrthoSys::O;
         Vel   [ix][iy][iz] = OrthoSys::O;
         Rho   [ix][iy][iz] = 0.0;
-        // if (!IsSolid[ix][iy][iz])
-        // {
+        if (!IsSolid[ix][iy][iz])
+        {
             for (size_t k=0;k<Nneigh;k++)
             {
                 Rho[ix][iy][iz] +=  F[ix][iy][iz][k];
@@ -25,7 +25,7 @@ inline void Domain::CalcProps()
             }
             Vel[ix][iy][iz] *= Cs/Rho[ix][iy][iz];
             // Vel[ix][iy][iz] += 0.5*dt*BForce[ix][iy][iz];
-        // }
+        }
     }
 }
 

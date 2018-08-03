@@ -8,7 +8,7 @@ tau = 0.53;
 dx = 1;
 dt = 1;
 
-num = 1:3;
+num = 1:37;
 name = strcat(prefix_name,middle_name,num2str(num(1),'%04d'),'.h5');
 [data,domain] = getData(char(name),char('/Flbm_0'),2,true);
 Nx = domain.Nx;

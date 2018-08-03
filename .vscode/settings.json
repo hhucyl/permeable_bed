@@ -40,6 +40,17 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "utility": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "future": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "streambuf": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "iomanip": "cpp",
+        "numeric": "cpp",
+        "sstream": "cpp"
     }
 }

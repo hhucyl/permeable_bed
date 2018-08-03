@@ -20,8 +20,8 @@ void Report(LBM::Domain &dom, void *UD)
     if(dom.Time <1e-6)
     {
         String fs;
-        // fs.Printf("%s.out","permeability");
-        fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
+        fs.Printf("%s.out","permeability");
+        // fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
         
         dat.oss_ss.open(fs.CStr(),std::ios::out);
         dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"K\n";
@@ -58,7 +58,7 @@ void Report(LBM::Domain &dom, void *UD)
             // if(dom.IsSolid[ix][iy][iz]) continue;
             // num += 1.0;
             Vec3_t e(0,0,1);
-            U += dot(dom.Vel[ix][iy][0],e);
+            U += dot(dom.Vel[ix][iy][iz],e);
         }
         U /= nx*ny*nz;
         // U /= num;
@@ -196,8 +196,8 @@ int main (int argc, char **argv) try
     addspheres2(dom,pos,R,ddx);
     
 
-    double Tf = 200;
-    double dtout = 1;
+    double Tf = 1e5;
+    double dtout = 1e2;
     char const * TheFileKey = "test_sc";
     //solving
     dom.StartSolve();

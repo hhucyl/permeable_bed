@@ -22,8 +22,8 @@ void Report(LBM::Domain &dom, void *UD)
     if(dom.Time <1e-6)
     {
         String fs;
-        // fs.Printf("%s.out","permeability");
-        fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
+        fs.Printf("%s.out","permeability");
+        // fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,dom.Tau);
         
         dat.oss_ss.open(fs.CStr(),std::ios::out);
         dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"r"<<Util::_8s<<"K\n";
@@ -52,7 +52,6 @@ void Report(LBM::Domain &dom, void *UD)
         // }
         // P2 /= nx*ny;
         double U = 0;
-        double num = 0;
         for(size_t ix=0;ix<nx;++ix)
         for(size_t iy=0;iy<ny;++iy)
         for(size_t iz=0;iz<nz;++iz)
@@ -60,7 +59,7 @@ void Report(LBM::Domain &dom, void *UD)
             // if(dom.IsSolid[ix][iy][iz]) continue;
             // num += 1.0;
             Vec3_t e(0,0,1);
-            U += dot(dom.Vel[ix][iy][0],e);
+            U += dot(dom.Vel[ix][iy][iz],e);
         }
         U /= nx*ny*nz;
         // U /= num;
@@ -223,9 +222,9 @@ int main (int argc, char **argv) try
 
     
 
-    double Tf = 2;
+    double Tf = 1e5;
     my_dat.Tf = Tf;
-    double dtout = 1;
+    double dtout = 1e2;
     char const * TheFileKey = "test_sc";
     //solving
     dom.StartSolve();
@@ -235,11 +234,11 @@ int main (int argc, char **argv) try
         if (dom.Time>=tout)
         {
             
-            // String fn;
-            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            String fn;
+            fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            // dom.WriteXDMF(fn.CStr());
-            // dom.idx_out++;
+            dom.WriteXDMF(fn.CStr());
+            dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;

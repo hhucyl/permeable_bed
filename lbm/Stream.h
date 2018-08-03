@@ -19,7 +19,7 @@ inline void Domain::Stream()
             size_t nix = (size_t)((int)ix + (int)C[k](0) + (int)Ndim(0))%Ndim(0);
             size_t niy = (size_t)((int)iy + (int)C[k](1) + (int)Ndim(1))%Ndim(1);
             size_t niz = (size_t)((int)iz + (int)C[k](2) + (int)Ndim(2))%Ndim(2);
-            F[nix][niy][niz][k] = Ftemp[ix][iy][iz][k] ;
+            F[nix][niy][niz][k] = Ftemp[ix][iy][iz][k];
         }
     }
 

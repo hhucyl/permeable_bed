@@ -17,7 +17,7 @@ inline void Domain::CollideSRT()
         if (!IsSolid[ix][iy][iz])
         {
             double NonEq[Nneigh];
-            // double Q = 0.0;
+            double Q = 0.0;
             double tau = Tau;
             double rho = Rho[ix][iy][iz];
             Vec3_t vel = Vel[ix][iy][iz];
@@ -27,10 +27,10 @@ inline void Domain::CollideSRT()
                 double VdotC = dot(vel,C[k]);
                 double Feq   = W[k]*rho*(1.0 + 3.0*VdotC + 4.5*VdotC*VdotC - 1.5*VdotV);
                 NonEq[k] = F[ix][iy][iz][k] - Feq;
-            //     Q +=  NonEq[k]*NonEq[k]*EEk[k];
+                Q +=  NonEq[k]*NonEq[k]*EEk[k];
             }
-            // Q = sqrt(2.0*Q);
-            // tau = 0.5*(tau+sqrt(tau*tau + 6.0*Q*Sc/rho));
+            Q = sqrt(2.0*Q);
+            tau = 0.5*(tau+sqrt(tau*tau + 6.0*Q*Sc/rho));
 
             // bool valid = true;
             // double alpha = 1.0;
@@ -139,6 +139,7 @@ inline void Domain::CollideMRT()
                 // double ForceTerm = dt*(1 - 1.0/(2.0*Tau))*W[k]*dot(BFt,BForce[ix][iy][iz]); 
                 
                 Ftemp[ix][iy][iz][k] = F[ix][iy][iz][k] - (1-Bn)*fneq[k] + Bn*Omeis[ix][iy][iz][k] + ForceTerm;
+                if(Ftemp[ix][iy][iz][k]<0) Ftemp[ix][iy][iz][k] = 0;
                 // if(ix == 1 &&iy==10&&iz ==0)
                 // {
                 //     std::cout<<"F "<<k<<"="<<F[ix][iy][iz][k]<<std::endl;
@@ -184,6 +185,91 @@ inline void Domain::CollideMRT()
     }
 
 }
+
+inline void Domain::CollideMRTLES()
+{
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for (size_t ix=0;ix<nx;ix++)
+    for (size_t iy=0;iy<ny;iy++)
+    for (size_t iz=0;iz<nz;iz++)
+    {
+        if (!IsSolid[ix][iy][iz])
+        {
+            // double NonEq[Nneigh];
+            
+            
+            double tau = Tau;
+            double rho = Rho[ix][iy][iz];
+            Vec3_t vel = Vel[ix][iy][iz];
+            // vel += 0.5*dt*BForce[ix][iy][iz];
+            // double VdotV = dot(vel,vel);
+            // for (size_t k=0;k<Nneigh;k++)
+            // {
+            //     double VdotC = dot(vel,C[k]);
+            //     double Feq   = W[k]*rho*(1.0 + 3.0*VdotC/Cs + 4.5*VdotC*VdotC/(Cs*Cs) - 1.5*VdotV/(Cs*Cs));
+            //     NonEq[k] = F[ix][iy][iz][k] - Feq;
+                //Q +=  NonEq[k]*NonEq[k]*EEk[k];
+            //}
+            //Q = sqrt(2.0*Q);
+            //tau = 0.5*(tau+sqrt(tau*tau + 6.0*Q*Sc/rho));
+            double *f = F[ix][iy][iz];
+            double *m = Ftemp[ix][iy][iz];
+            double fneq[Nneigh];
+            int n=Nneigh,mm=1;
+            double a = 1.0,b = 0.0;
+            dgemv_("N",&n,&n,&a,M.data,&n,f,&mm,&b,m,&mm);
+            
+            double Q = 0.0;
+            double drho = rho - Rho0;
+            double P[3][3] = {0};
+            P[0][0] = ((m[1]+2.0*drho) + m[9])/3.0;
+            P[1][1] = P[0][0] + 0.5*(m[11]-m[9]);
+            P[2][2] = P[1][1] - m[11];
+            P[1][0] = P[0][1] = m[13];
+            P[2][1] = P[1][2] = m[14];
+            P[0][2] = P[2][0] = m[15];
+            for(size_t im=0; im<3; im++)
+            for(size_t in=0; in<3; in++)
+            {
+                double dd = im==in ? 1.0: 0.0;
+                double QQ = dd*drho/3.0 + m[2*im+3]*m[2*in+3]-P[im][in];
+                Q += QQ*QQ;
+            }
+            Q = std::sqrt(Q);
+            tau = 0.5*(std::sqrt(tau*tau + 18.0*Sc*Sc*std::sqrt(Q))+tau);
+            S(9) = S(11) = S(13) = S(14) = S(15) = 1/tau;
+
+            (this->*ptr2meq)(m,rho,vel);
+            // MeqD3Q19(m,rho,vel);
+            
+            dgemv_("N",&n,&n,&a,Minv.data,&n,m,&mm,&b,fneq,&mm);
+            
+            double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));
+            for (size_t k=0; k<Nneigh; k++)
+            {
+                double ForceTerm = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
+                // Vec3_t BFt(0.0, 0.0, 0.0);
+                // BFt = 3.0*(C[k] - vel)/(Cs*Cs) + 9.0*dot(C[k],vel)/(Cs*Cs*Cs*Cs)*C[k]; 
+                // double ForceTerm = dt*(1 - 1.0/(2.0*Tau))*W[k]*dot(BFt,BForce[ix][iy][iz]); 
+                
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][k] - (1-Bn)*fneq[k] + Bn*Omeis[ix][iy][iz][k] + ForceTerm;
+               
+            }
+        }else{
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][Op[k]];
+            }
+        }
+    }
+}
+
+
 
 inline void Domain::CollideMRTMR()
 {
@@ -316,6 +402,102 @@ inline void Domain::MeqD3Q19(double *m, double rho, Vec3_t &vel)
     // m[16] = S(16)*  m[16];
     // m[17] = S(17)*  m[17];
     // m[18] = S(18)*  m[18];
+}
+
+inline void Domain::CollideSRTIBM()
+{
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for (size_t ix=0;ix<nx;ix++)
+    for (size_t iy=0;iy<ny;iy++)
+    for (size_t iz=0;iz<nz;iz++)
+    {
+        if (!IsSolid[ix][iy][iz])
+        {
+            
+            double tau = Tau;
+            double rho = Rho[ix][iy][iz];
+            Vec3_t bf = Flbm[ix][iy][iz];
+            Vec3_t vel = Vel[ix][iy][iz] + 0.5*bf/rho*dt;
+            double NonEq[Nneigh];
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                NonEq[k] = F[ix][iy][iz][k] - Feq(k,rho,vel);
+            }
+                
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                double ForceTerm1 = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
+                Vec3_t BFt(0.0, 0.0, 0.0);
+                BFt = 3.0*(C[k] - vel)/(Cs*Cs) + 9.0*dot(C[k],vel)/(Cs*Cs*Cs*Cs)*C[k]; 
+                double ForceTerm = dt*(1 - 1.0/(2.0*Tau))*W[k]*dot(BFt,bf); 
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][k] - NonEq[k]/tau + ForceTerm + ForceTerm1;
+              
+            }
+        }
+        else
+        {
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][Op[k]];
+            }
+        }
+    }
+}
+
+inline void Domain::CollideMRTIBM()
+{
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for (size_t ix=0;ix<nx;ix++)
+    for (size_t iy=0;iy<ny;iy++)
+    for (size_t iz=0;iz<nz;iz++)
+    {
+        if (!IsSolid[ix][iy][iz])
+        {
+            
+            double tau = Tau;
+            double rho = Rho[ix][iy][iz];
+            Vec3_t bf = Flbm[ix][iy][iz];
+            Vec3_t vel = Vel[ix][iy][iz] + 0.5*bf/rho*dt;
+            double *f = F[ix][iy][iz];
+            double *m = Ftemp[ix][iy][iz];
+            double fneq[Nneigh];
+            int n=Nneigh,mm=1;
+            double a = 1.0,b = 0.0;
+            dgemv_("N",&n,&n,&a,M.data,&n,f,&mm,&b,m,&mm);
+            
+            (this->*ptr2meq)(m,rho,vel);
+            
+            dgemv_("N",&n,&n,&a,Minv.data,&n,m,&mm,&b,fneq,&mm);
+
+                
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                double ForceTerm1 = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
+                Vec3_t BFt(0.0, 0.0, 0.0);
+                BFt = 3.0*(C[k] - vel)/(Cs*Cs) + 9.0*dot(C[k],vel)/(Cs*Cs*Cs*Cs)*C[k]; 
+                double ForceTerm = dt*(1 - 1.0/(2.0*Tau))*W[k]*dot(BFt,bf); 
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][k] - fneq[k]  + ForceTerm + ForceTerm1;
+              
+            }
+        }
+        else
+        {
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][Op[k]];
+            }
+        }
+    }
 }
 
 #endif
