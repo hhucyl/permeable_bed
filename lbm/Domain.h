@@ -142,8 +142,10 @@ public:
     void   BounceBackMR(bool calcF = true);
     void   BoundaryGamma();
     double KernelIBM(double r, double x);
+    double KernelIBM1(double r, double x);
     void   ApplyIBM2D(Vec3_t &pos, double R);
     void   ApplyIBM3D(Vec3_t &pos, double R);
+    void   ApplyIBM3DIM(Vec3_t &pos, double R, size_t IT);
     void   GenPts(Vec3_t &pos, double R, int N);
     void   CalcProps();
     void   Initialize(iVec3_t idx, double Rho, Vec3_t & Vel);           ///< Initialize each cell with a given density and velocity
@@ -155,6 +157,7 @@ public:
     void WriteXDMF         (char const * FileKey);                                ///< Write the domain data in xdmf file
     void AddDiskQ(Vec3_t &pos, double R);
     void AddSphereQ(Vec3_t &pos, double R);
+    void AddDiskG(Vec3_t &pos, double R);
     void AddSphereG(Vec3_t &pos, double R);
     void CalcForceQ();
     void SetZero();

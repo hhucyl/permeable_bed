@@ -1,7 +1,7 @@
 clear
 clc
 prefix_name = {'/home/pzhang/chen/permeable_bed/'};
-middle_name = {'test_line_'};
+middle_name = {'test_sc_'};
 
 name = strcat(prefix_name,middle_name,num2str(0,'%04d'),'.h5');
 [data,domain] = getData(char(name),char('/q_0'),2,false);

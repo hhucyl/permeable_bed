@@ -31,9 +31,11 @@ SET(PROGS
     test_bb
     test_ga
     test_bed
+    test_ibm
     test_ibm2
     test_ibm3
     test_sc_ibm
+    temp
 )
 
 FOREACH(var ${PROGS})

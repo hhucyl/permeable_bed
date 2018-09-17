@@ -582,6 +582,61 @@ inline void Domain::AddSphereG(Vec3_t &pos, double R)
     
 }
 
+inline void Domain::AddDiskG(Vec3_t &pos, double R)
+{
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for(size_t ix=0; ix<nx; ++ix)
+    for(size_t iy=0; iy<ny; ++iy) 
+    {
+        Vec3_t CC(ix,iy,0);
+        double len = DEM::DiskSquare(pos,CC,R,dx);
+        if (std::fabs(len)<1.0e-12) continue;
+        double gamma  = len/(4.0*dx);
+        // std::cout<<ix<<" "<<iy<<" "<<iz<<" "<<gamma<<std::endl;
+                
+        Gamma[ix][iy][0] = std::min(gamma,1.0);
+        
+        //cell->Gamma   = std::max(gamma,cell->Gamma);
+        //cell->Gamma   = std::min(gamma+cell->Gamma,1.0);
+        //if (fabs(cell->Gamma-1.0)<1.0e-12)
+        //if (fabs(cell->Gamma-1.0)<1.0e-12&&(fabs(Lat[0].G)>1.0e-12||Gmix>1.0e-12)) 
+        
+        // Vec3_t B      = CC - pos;
+        // Vec3_t tmp;
+        // Rotation(Pa->w,Pa->Q,tmp);
+        // Vec3_t VelP   = Pa->v + cross(tmp,B);
+        Vec3_t VelPt(0.0,0.0,0.0);
+        double rho = Rho[ix][iy][0];
+        double Bn  = (gamma*(Tau-0.5))/((1.0-gamma)+(Tau-0.5));
+        //double Bn  = gamma;
+        //double Bn  = floor(gamma);
+        
+        Vec3_t Flbmt(0.0,0.0,0.0);
+        // double *FF = F[ix][iy][iz];
+        
+        for (size_t k=0;k<Nneigh;k++)
+        {
+            double Fvpp     = Feq(Op[k],rho,VelPt);
+            double Fvp      = Feq(k    ,rho,VelPt);
+            double Omega    = F[ix][iy][0][Op[k]] - Fvpp - (F[ix][iy][0][k] - Fvp);
+            //cell->Omeis[k] += Omega;
+            //cell->Omeis[k] += gamma*Omega;
+            // cell->Omeis[k] = Omega;
+            Omeis[ix][iy][0][k] = Omega;
+            Flbmt += -Bn*Omega*C[k];
+        }
+        
+        Flbm[ix][iy][0] = Flbmt;
+    }
+    
+    
+}
+
 inline void Domain::BoundaryGamma()
 {
     size_t nx = Ndim(0);
@@ -628,10 +683,10 @@ inline double Domain::KernelIBM(double r, double x)
 {
     double xx = (r-x)/dx;
     double ll = std::sqrt(xx*xx);
-    if(ll>=2.0*dx)
+    if(ll>=2.0)
     {
         return 0;
-    }else if(ll>=1.0*dx)
+    }else if(ll>=1.0)
     {
         return 0.125*(5.0 - 2.0*ll - std::sqrt(-7.0 + 12.0*ll - 4.0*ll*ll));
     }else{
@@ -639,6 +694,20 @@ inline double Domain::KernelIBM(double r, double x)
         
     }
 }
+
+inline double Domain::KernelIBM1(double r, double x)
+{
+    double xx = (r-x)/dx;
+    double ll = std::sqrt(xx*xx);
+    if(ll>1.0)
+    {
+        return 0;
+    }else{
+        return 1-std::fabs(xx);
+        
+    }
+}
+
 
 inline void Domain::ApplyIBM2D(Vec3_t &pos, double R)
 {
@@ -733,7 +802,7 @@ inline void Domain::ApplyIBM3D(Vec3_t &pos, double R)
         for(int iy= iys; iy<iye; iy++)
         for(int iz= izs; iz<ize; iz++)
         {
-            VelIBM[im] += Vel[ix][iy][iz]*KernelIBM(r(0),ix)*KernelIBM(r(1),iy)*KernelIBM(r(2),iz); 
+            VelIBM[im] += Vel[ix][iy][iz]*KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz); 
         }
         
         
@@ -744,6 +813,12 @@ inline void Domain::ApplyIBM3D(Vec3_t &pos, double R)
     int iye = std::min(std::ceil(pos(1) + (R+3)*dx),(double) ny);
     int izs = std::max(std::floor(pos(2) - (R+3)*dx),0.0);
     int ize = std::min(std::ceil(pos(2) + (R+3)*dx),(double) nz);
+    /*int ixs = 0;
+    int ixe = nx;
+    int iys = 0;
+    int iye = ny;
+    int izs = 0;
+    int ize = nz;*/
     #ifdef USE_OMP
     #pragma omp parallel for schedule(static) num_threads(Nproc)
     #endif
@@ -754,18 +829,91 @@ inline void Domain::ApplyIBM3D(Vec3_t &pos, double R)
     // for(size_t iy=0; iy<ny; ++iy)
     // for(size_t iz=0; iz<nz; ++iz)  
     {
-        Flbm[ix][iy][iz] = 0.0,0.0,0.0;
+        // Flbm[ix][iy][iz] = 0.0,0.0,0.0;
         for(size_t im=0; im<N; im++)
         {
             Vec3_t r = points[im];
-            if(std::fabs(KernelIBM(r(0),ix)*KernelIBM(r(1),iy)*KernelIBM(r(2),iz))<1e-9) continue;       
-            Vec3_t FIBM = 2.0*Rho[ix][iy][0]*(0.0-VelIBM[im])/dt;
-            Flbm[ix][iy][iz] += FIBM*KernelIBM(r(0),ix)*KernelIBM(r(1),iy)*KernelIBM(r(2),iz)/(dx*dx*dx)*dS[im]; 
+            if(std::fabs(KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz))<1e-9) continue;       
+            Vec3_t FIBM = 2.0*Rho[ix][iy][iz]*(0.0-VelIBM[im])/dt;
+            Flbm[ix][iy][iz] += FIBM*KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz)/(dx*dx*dx)*dS[im]; 
         }
+        Vel[ix][iy][iz] += dt/(2.0*Rho[ix][iy][iz])*Flbm[ix][iy][iz];
         
     }
     
 }
+
+
+inline void Domain::ApplyIBM3DIM(Vec3_t &pos, double R, size_t IT)
+{
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    int N = points.size();
+    Vec3_t VelIBM[N];
+    int ixss = std::max(std::floor(pos(0) - (R+3)*dx),0.0);
+    int ixee = std::min(std::ceil(pos(0) + (R+3)*dx),(double) nx);
+    int iyss = std::max(std::floor(pos(1) - (R+3)*dx),0.0);
+    int iyee = std::min(std::ceil(pos(1) + (R+3)*dx),(double) ny);
+    int izss = std::max(std::floor(pos(2) - (R+3)*dx),0.0);
+    int izee = std::min(std::ceil(pos(2) + (R+3)*dx),(double) nz);
+    for(size_t it=0; it<IT; it++)
+    {
+        #ifdef USE_OMP
+        #pragma omp parallel for schedule(static) num_threads(Nproc)
+        #endif
+        for(size_t im=0; im<N; im++)
+        {
+            Vec3_t r = points[im];
+            int ixs = std::max(std::floor(r(0) - 3*dx),0.0);
+            int ixe = std::min(std::ceil(r(0) + 3*dx),(double) nx);
+            int iys = std::max(std::floor(r(1) - 3*dx),0.0);
+            int iye = std::min(std::ceil(r(1) + 3*dx),(double) ny);
+            int izs = std::max(std::floor(r(2) - 3*dx),0.0);
+            int ize = std::min(std::ceil(r(2) + 3*dx),(double) nz);
+            VelIBM[im] = 0.0,0.0,0.0;
+            
+            for(int ix= ixs; ix<ixe; ix++)
+            for(int iy= iys; iy<iye; iy++)
+            for(int iz= izs; iz<ize; iz++)
+            {
+                VelIBM[im] += Vel[ix][iy][iz]*KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz); 
+            }
+            
+            
+        }
+        
+        
+        
+        #ifdef USE_OMP
+        #pragma omp parallel for schedule(static) num_threads(Nproc)
+        #endif
+        for(int ix= ixss; ix<ixee; ix++)
+        for(int iy= iyss; iy<iyee; iy++)
+        for(int iz= izss; iz<izee; iz++)
+        // for(size_t ix=0; ix<nx; ++ix)
+        // for(size_t iy=0; iy<ny; ++iy)
+        // for(size_t iz=0; iz<nz; ++iz)  
+        {
+            // Flbm[ix][iy][iz] = 0.0,0.0,0.0;
+            Vec3_t Flbmt(0.0,0.0,0.0);
+            for(size_t im=0; im<N; im++)
+            {
+                Vec3_t r = points[im];
+                if(std::fabs(KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz))<1e-9) continue;       
+                Vec3_t FIBM = 2.0*Rho[ix][iy][iz]*(0.0-VelIBM[im])/dt;
+                Flbmt += FIBM*KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz)/(dx*dx*dx)*dS[im]; 
+                
+            }
+            // if(ix == 14&&iy ==14&&iz ==1) std::cout<<Time<<" "<<Flbmt<<" "<<Flbm[14][14][1]<<std::endl;
+            Vel[ix][iy][iz] += dt/(2.0*Rho[ix][iy][iz])*Flbmt;
+            Flbm[ix][iy][iz] += Flbmt;
+        }
+        // std::cout<<"IT "<<IT<<" "<<Flbm[14][14][1]<<std::endl;
+    }
+}
+    
+
 
 
 

@@ -166,7 +166,7 @@ int main (int argc, char **argv) try
     size_t h = 30;
     size_t h1 = 30;
     int bbtype = -2;
-    double tau = 0.6;
+    double tau = 2.0;
     if(argc>=2) bbtype = atoi(argv[1]); 
     if(argc>=3) h = atoi(argv[2]);
     if(argc>=4) tau = atof(argv[3]);     
@@ -181,7 +181,7 @@ int main (int argc, char **argv) try
     Vec3_t pos(nx/2-1,ny/2-1,nz/2-1);
     double XX = 0.85;//x = (c/cmax)^1/3
     double cmax = M_PI/6.0;//for bcc cmax = 3^0.5*pi/8
-    double R = std::pow(XX*XX*XX*cmax*h1*h1*h1/(4.0/3.0*M_PI),1.0/3.0);//x = (c/cmax)^1/3 c = Vs/V
+    double R = std::pow(XX*XX*XX*cmax*h*h*h/(4.0/3.0*M_PI),1.0/3.0);//x = (c/cmax)^1/3 c = Vs/V
     std::cout<<"R = "<<R<<std::endl;
     double rho0 = 1.0;
     Vec3_t v0(0.0,0.0,0.0);
@@ -198,7 +198,7 @@ int main (int argc, char **argv) try
     my_dat.R = R;
     my_dat.u = 0.04;
     my_dat.g = 2e-5;
-    my_dat.Tf = Tf;
+    
     my_dat.K = 0.0;
     my_dat.nu = nu;
     my_dat.bbtype = bbtype;
@@ -213,7 +213,11 @@ int main (int argc, char **argv) try
 
     //initial
     Initial(dom,rho0,v0,g0);
-    std::fstream ifile("Nodes_sc.txt",std::ios::in);
+    char const * TheFileKey1 = "Nodes_sc";
+    String fn1;
+    fn1.Printf("%s_%d", TheFileKey1, h);
+    fn1.append(".txt");
+    std::fstream ifile(fn1.CStr(),std::ios::in);
 	int N = 0;
     double Rc = 0;
     Vec3_t post(0.0,0.0,0.0);
@@ -235,7 +239,7 @@ int main (int argc, char **argv) try
             post = x+pos(0), y+pos(1), z+pos(2);
             if(std::fabs(dot(post - pos, post - pos)-R*R)>1e-5) 
             {
-                std::cout<<std::fabs(dot(post - pos, post - pos)-R*R)<<std::endl;
+                // std::cout<<std::fabs(dot(post - pos, post - pos)-R*R)<<std::endl;
             }
             dom.points.push_back(post);
             dom.dS.push_back(ds);
@@ -243,8 +247,9 @@ int main (int argc, char **argv) try
 	}
     std::cout<<dom.dS[0]<<std::endl; 
 
-    Tf = 2;
-    double dtout = 1;
+    Tf = 1e6;
+    my_dat.Tf = Tf;
+    double dtout = 1e2;
     char const * TheFileKey = "test_ibm";
     //solving
     dom.StartTime = std::clock();
@@ -268,9 +273,11 @@ int main (int argc, char **argv) try
         }
         // (dom.*dom.ptr2collide)();
         
-        
+        dom.SetZero();
         dom.ApplyIBM3D(pos,R);
+        // dom.ApplyIBM3DIM(pos,R,1);
         dom.CollideMRTIBM();
+        // dom.CollideSRTIBM();
         // InOut(dom,&my_dat);
         dom.Stream();
         

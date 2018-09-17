@@ -147,7 +147,7 @@ int main (int argc, char **argv) try
     }   
     size_t Nproc = 8;
     size_t h = 30;
-    double tau = 0.8;
+    double tau = 2.0;
     size_t bbtype = 1;
     if(argc>=2) bbtype = atoi(argv[1]); 
     if(argc>=3) h = atoi(argv[2]);
@@ -171,6 +171,7 @@ int main (int argc, char **argv) try
     // Vec3_t pos(200.5,299.5,0);
     double nu = (tau-0.5)/3.0;
     //nu = 1.0/30.0;
+    std::cout<<nx<<" "<<ny<<" "<<nz<<std::endl;
     LBM::Domain dom(D3Q19,MRT, nu, iVec3_t(nx,ny,nz),dx,dt);
     if(bbtype == 0)
     {
@@ -208,7 +209,7 @@ int main (int argc, char **argv) try
 
                
 
-    //dom.Isq = true;
+    dom.Isq = true;
     // dom.IsF = false;
     // dom.IsFt = false;
     //bounndary
@@ -222,9 +223,9 @@ int main (int argc, char **argv) try
 
     
 
-    double Tf = 2;
+    double Tf = 1e6;
     my_dat.Tf = Tf;
-    double dtout = 1;
+    double dtout = 1e2;
     char const * TheFileKey = "test_sc";
     //solving
     dom.StartSolve();

@@ -151,7 +151,7 @@ int main (int argc, char **argv) try
     
     size_t Nproc = 8;
     size_t h = 30;
-    int bbtype = -1;
+    int bbtype = -4;
     double tau = 0.6;
     if(argc>=2) bbtype = atoi(argv[1]); 
     if(argc>=3) h = atoi(argv[2]);
@@ -173,6 +173,7 @@ int main (int argc, char **argv) try
     // Vec3_t pos(200.5,299.5,0);
     double nu = (tau-0.5)/3.0;
     //nu = 1.0/30.0;
+    std::cout<<nx<<" "<<ny<<" "<<nz<<std::endl;
     LBM::Domain dom(D3Q19,methodc, nu, iVec3_t(nx,ny,nz),dx,dt);
     myUserData my_dat;
     dom.UserData = &my_dat;
@@ -206,10 +207,10 @@ int main (int argc, char **argv) try
     addspheres2(dom,pos,R,ddx);
     
 
-    double Tf = 2;
+    double Tf = 1e6;
     my_dat.Tf = Tf;
     
-    double dtout = 1;
+    double dtout = 1e2;
     char const * TheFileKey = "test_sc";
     //solving
     dom.StartSolve();
@@ -224,7 +225,7 @@ int main (int argc, char **argv) try
             
             // dom.WriteXDMF(fn.CStr());
             // dom.idx_out++;
-            // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
+            // std::cout<<"--- Time = "<<dom.Time<<" "<<Tf<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;
         }

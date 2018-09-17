@@ -128,7 +128,7 @@ int main (int argc, char **argv) try
     double dx = 1.0;
     double dt = 1.0;
     double nu = (tau-0.5)/3.0;
-    double uw = 0.01;
+    double uw = 0.0;
     // Vec3_t pos(200.5,299.5,0);
     double rho0 = 1.0;
     Vec3_t v0(0.0,0.0,0.0);
