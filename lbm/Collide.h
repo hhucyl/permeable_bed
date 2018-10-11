@@ -130,8 +130,8 @@ inline void Domain::CollideMRT()
             //         fneq[i] += Minv(i,j)*m[j];                   
             //     }
             // }
-            // double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));
-            Bn = Gamma[ix][iy][iz];
+             double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));
+            //Bn = Gamma[ix][iy][iz];
             for (size_t k=0; k<Nneigh; k++)
             {
                 double ForceTerm = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
@@ -315,6 +315,7 @@ inline void Domain::CollideMRTMR()
                 double ForceTerm = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
                 
                 Ftemp[ix][iy][iz][k] = F[ix][iy][iz][k] - (1-Bn)*fneq[k] + Bn*Omeis[ix][iy][iz][k] + ForceTerm;
+                if(Ftemp[ix][iy][iz][k]<0) Ftemp[ix][iy][iz][k] = 0; 
                 
             }
 

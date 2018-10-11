@@ -100,50 +100,13 @@ clean: CMakeFiles/temp.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/test_ibm3.dir
-
-# All Build rule for target.
-CMakeFiles/test_ibm3.dir/all:
-	$(MAKE) -f CMakeFiles/test_ibm3.dir/build.make CMakeFiles/test_ibm3.dir/depend
-	$(MAKE) -f CMakeFiles/test_ibm3.dir/build.make CMakeFiles/test_ibm3.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=17,18 "Built target test_ibm3"
-.PHONY : CMakeFiles/test_ibm3.dir/all
-
-# Include target in all.
-all: CMakeFiles/test_ibm3.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/test_ibm3.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pzhang/chen/permeable_bed/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_ibm3.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pzhang/chen/permeable_bed/CMakeFiles 0
-.PHONY : CMakeFiles/test_ibm3.dir/rule
-
-# Convenience name for target.
-test_ibm3: CMakeFiles/test_ibm3.dir/rule
-
-.PHONY : test_ibm3
-
-# clean rule for target.
-CMakeFiles/test_ibm3.dir/clean:
-	$(MAKE) -f CMakeFiles/test_ibm3.dir/build.make CMakeFiles/test_ibm3.dir/clean
-.PHONY : CMakeFiles/test_ibm3.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/test_ibm3.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
 # Target rules for target CMakeFiles/test_sc_ga.dir
 
 # All Build rule for target.
 CMakeFiles/test_sc_ga.dir/all:
 	$(MAKE) -f CMakeFiles/test_sc_ga.dir/build.make CMakeFiles/test_sc_ga.dir/depend
 	$(MAKE) -f CMakeFiles/test_sc_ga.dir/build.make CMakeFiles/test_sc_ga.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=21,22 "Built target test_sc_ga"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=19,20 "Built target test_sc_ga"
 .PHONY : CMakeFiles/test_sc_ga.dir/all
 
 # Include target in all.
@@ -217,7 +180,7 @@ clean: CMakeFiles/test_bb.dir/clean
 CMakeFiles/test_ibm2.dir/all:
 	$(MAKE) -f CMakeFiles/test_ibm2.dir/build.make CMakeFiles/test_ibm2.dir/depend
 	$(MAKE) -f CMakeFiles/test_ibm2.dir/build.make CMakeFiles/test_ibm2.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=15,16 "Built target test_ibm2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=13,14 "Built target test_ibm2"
 .PHONY : CMakeFiles/test_ibm2.dir/all
 
 # Include target in all.
@@ -254,7 +217,7 @@ clean: CMakeFiles/test_ibm2.dir/clean
 CMakeFiles/test_sc_bb.dir/all:
 	$(MAKE) -f CMakeFiles/test_sc_bb.dir/build.make CMakeFiles/test_sc_bb.dir/depend
 	$(MAKE) -f CMakeFiles/test_sc_bb.dir/build.make CMakeFiles/test_sc_bb.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=19,20 "Built target test_sc_bb"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=17,18 "Built target test_sc_bb"
 .PHONY : CMakeFiles/test_sc_bb.dir/all
 
 # Include target in all.
@@ -291,7 +254,7 @@ clean: CMakeFiles/test_sc_bb.dir/clean
 CMakeFiles/test_cd_bb.dir/all:
 	$(MAKE) -f CMakeFiles/test_cd_bb.dir/build.make CMakeFiles/test_cd_bb.dir/depend
 	$(MAKE) -f CMakeFiles/test_cd_bb.dir/build.make CMakeFiles/test_cd_bb.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=7,8 "Built target test_cd_bb"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=5,6 "Built target test_cd_bb"
 .PHONY : CMakeFiles/test_cd_bb.dir/all
 
 # Include target in all.
@@ -328,7 +291,7 @@ clean: CMakeFiles/test_cd_bb.dir/clean
 CMakeFiles/test_sc_ibm.dir/all:
 	$(MAKE) -f CMakeFiles/test_sc_ibm.dir/build.make CMakeFiles/test_sc_ibm.dir/depend
 	$(MAKE) -f CMakeFiles/test_sc_ibm.dir/build.make CMakeFiles/test_sc_ibm.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=23,24 "Built target test_sc_ibm"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=21,22 "Built target test_sc_ibm"
 .PHONY : CMakeFiles/test_sc_ibm.dir/all
 
 # Include target in all.
@@ -365,7 +328,7 @@ clean: CMakeFiles/test_sc_ibm.dir/clean
 CMakeFiles/test_cd_ga.dir/all:
 	$(MAKE) -f CMakeFiles/test_cd_ga.dir/build.make CMakeFiles/test_cd_ga.dir/depend
 	$(MAKE) -f CMakeFiles/test_cd_ga.dir/build.make CMakeFiles/test_cd_ga.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=9,10 "Built target test_cd_ga"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=7,8 "Built target test_cd_ga"
 .PHONY : CMakeFiles/test_cd_ga.dir/all
 
 # Include target in all.
@@ -402,7 +365,7 @@ clean: CMakeFiles/test_cd_ga.dir/clean
 CMakeFiles/test_ibm.dir/all:
 	$(MAKE) -f CMakeFiles/test_ibm.dir/build.make CMakeFiles/test_ibm.dir/depend
 	$(MAKE) -f CMakeFiles/test_ibm.dir/build.make CMakeFiles/test_ibm.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=13,14 "Built target test_ibm"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=11,12 "Built target test_ibm"
 .PHONY : CMakeFiles/test_ibm.dir/all
 
 # Include target in all.
@@ -433,39 +396,39 @@ clean: CMakeFiles/test_ibm.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/test_sphere_bb.dir
+# Target rules for target CMakeFiles/test_spheres_bb.dir
 
 # All Build rule for target.
-CMakeFiles/test_sphere_bb.dir/all:
-	$(MAKE) -f CMakeFiles/test_sphere_bb.dir/build.make CMakeFiles/test_sphere_bb.dir/depend
-	$(MAKE) -f CMakeFiles/test_sphere_bb.dir/build.make CMakeFiles/test_sphere_bb.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=25,26 "Built target test_sphere_bb"
-.PHONY : CMakeFiles/test_sphere_bb.dir/all
+CMakeFiles/test_spheres_bb.dir/all:
+	$(MAKE) -f CMakeFiles/test_spheres_bb.dir/build.make CMakeFiles/test_spheres_bb.dir/depend
+	$(MAKE) -f CMakeFiles/test_spheres_bb.dir/build.make CMakeFiles/test_spheres_bb.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=23,24 "Built target test_spheres_bb"
+.PHONY : CMakeFiles/test_spheres_bb.dir/all
 
 # Include target in all.
-all: CMakeFiles/test_sphere_bb.dir/all
+all: CMakeFiles/test_spheres_bb.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/test_sphere_bb.dir/rule: cmake_check_build_system
+CMakeFiles/test_spheres_bb.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/pzhang/chen/permeable_bed/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_sphere_bb.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_spheres_bb.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/pzhang/chen/permeable_bed/CMakeFiles 0
-.PHONY : CMakeFiles/test_sphere_bb.dir/rule
+.PHONY : CMakeFiles/test_spheres_bb.dir/rule
 
 # Convenience name for target.
-test_sphere_bb: CMakeFiles/test_sphere_bb.dir/rule
+test_spheres_bb: CMakeFiles/test_spheres_bb.dir/rule
 
-.PHONY : test_sphere_bb
-
-# clean rule for target.
-CMakeFiles/test_sphere_bb.dir/clean:
-	$(MAKE) -f CMakeFiles/test_sphere_bb.dir/build.make CMakeFiles/test_sphere_bb.dir/clean
-.PHONY : CMakeFiles/test_sphere_bb.dir/clean
+.PHONY : test_spheres_bb
 
 # clean rule for target.
-clean: CMakeFiles/test_sphere_bb.dir/clean
+CMakeFiles/test_spheres_bb.dir/clean:
+	$(MAKE) -f CMakeFiles/test_spheres_bb.dir/build.make CMakeFiles/test_spheres_bb.dir/clean
+.PHONY : CMakeFiles/test_spheres_bb.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/test_spheres_bb.dir/clean
 
 .PHONY : clean
 
@@ -476,7 +439,7 @@ clean: CMakeFiles/test_sphere_bb.dir/clean
 CMakeFiles/test_ga.dir/all:
 	$(MAKE) -f CMakeFiles/test_ga.dir/build.make CMakeFiles/test_ga.dir/depend
 	$(MAKE) -f CMakeFiles/test_ga.dir/build.make CMakeFiles/test_ga.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=11,12 "Built target test_ga"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=9,10 "Built target test_ga"
 .PHONY : CMakeFiles/test_ga.dir/all
 
 # Include target in all.
@@ -507,39 +470,39 @@ clean: CMakeFiles/test_ga.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/test_bed.dir
+# Target rules for target CMakeFiles/test_ibm3.dir
 
 # All Build rule for target.
-CMakeFiles/test_bed.dir/all:
-	$(MAKE) -f CMakeFiles/test_bed.dir/build.make CMakeFiles/test_bed.dir/depend
-	$(MAKE) -f CMakeFiles/test_bed.dir/build.make CMakeFiles/test_bed.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=5,6 "Built target test_bed"
-.PHONY : CMakeFiles/test_bed.dir/all
+CMakeFiles/test_ibm3.dir/all:
+	$(MAKE) -f CMakeFiles/test_ibm3.dir/build.make CMakeFiles/test_ibm3.dir/depend
+	$(MAKE) -f CMakeFiles/test_ibm3.dir/build.make CMakeFiles/test_ibm3.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pzhang/chen/permeable_bed/CMakeFiles --progress-num=15,16 "Built target test_ibm3"
+.PHONY : CMakeFiles/test_ibm3.dir/all
 
 # Include target in all.
-all: CMakeFiles/test_bed.dir/all
+all: CMakeFiles/test_ibm3.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/test_bed.dir/rule: cmake_check_build_system
+CMakeFiles/test_ibm3.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/pzhang/chen/permeable_bed/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_bed.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_ibm3.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/pzhang/chen/permeable_bed/CMakeFiles 0
-.PHONY : CMakeFiles/test_bed.dir/rule
+.PHONY : CMakeFiles/test_ibm3.dir/rule
 
 # Convenience name for target.
-test_bed: CMakeFiles/test_bed.dir/rule
+test_ibm3: CMakeFiles/test_ibm3.dir/rule
 
-.PHONY : test_bed
-
-# clean rule for target.
-CMakeFiles/test_bed.dir/clean:
-	$(MAKE) -f CMakeFiles/test_bed.dir/build.make CMakeFiles/test_bed.dir/clean
-.PHONY : CMakeFiles/test_bed.dir/clean
+.PHONY : test_ibm3
 
 # clean rule for target.
-clean: CMakeFiles/test_bed.dir/clean
+CMakeFiles/test_ibm3.dir/clean:
+	$(MAKE) -f CMakeFiles/test_ibm3.dir/build.make CMakeFiles/test_ibm3.dir/clean
+.PHONY : CMakeFiles/test_ibm3.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/test_ibm3.dir/clean
 
 .PHONY : clean
 

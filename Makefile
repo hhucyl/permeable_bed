@@ -127,19 +127,6 @@ temp/fast:
 .PHONY : temp/fast
 
 #=============================================================================
-# Target rules for targets named test_ibm3
-
-# Build rule for target.
-test_ibm3: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_ibm3
-.PHONY : test_ibm3
-
-# fast build rule for target.
-test_ibm3/fast:
-	$(MAKE) -f CMakeFiles/test_ibm3.dir/build.make CMakeFiles/test_ibm3.dir/build
-.PHONY : test_ibm3/fast
-
-#=============================================================================
 # Target rules for targets named test_sc_ga
 
 # Build rule for target.
@@ -244,17 +231,17 @@ test_ibm/fast:
 .PHONY : test_ibm/fast
 
 #=============================================================================
-# Target rules for targets named test_sphere_bb
+# Target rules for targets named test_spheres_bb
 
 # Build rule for target.
-test_sphere_bb: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_sphere_bb
-.PHONY : test_sphere_bb
+test_spheres_bb: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_spheres_bb
+.PHONY : test_spheres_bb
 
 # fast build rule for target.
-test_sphere_bb/fast:
-	$(MAKE) -f CMakeFiles/test_sphere_bb.dir/build.make CMakeFiles/test_sphere_bb.dir/build
-.PHONY : test_sphere_bb/fast
+test_spheres_bb/fast:
+	$(MAKE) -f CMakeFiles/test_spheres_bb.dir/build.make CMakeFiles/test_spheres_bb.dir/build
+.PHONY : test_spheres_bb/fast
 
 #=============================================================================
 # Target rules for targets named test_ga
@@ -270,17 +257,17 @@ test_ga/fast:
 .PHONY : test_ga/fast
 
 #=============================================================================
-# Target rules for targets named test_bed
+# Target rules for targets named test_ibm3
 
 # Build rule for target.
-test_bed: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_bed
-.PHONY : test_bed
+test_ibm3: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_ibm3
+.PHONY : test_ibm3
 
 # fast build rule for target.
-test_bed/fast:
-	$(MAKE) -f CMakeFiles/test_bed.dir/build.make CMakeFiles/test_bed.dir/build
-.PHONY : test_bed/fast
+test_ibm3/fast:
+	$(MAKE) -f CMakeFiles/test_ibm3.dir/build.make CMakeFiles/test_ibm3.dir/build
+.PHONY : test_ibm3/fast
 
 temp.o: temp.cpp.o
 
@@ -335,33 +322,6 @@ test_bb.s: test_bb.cpp.s
 test_bb.cpp.s:
 	$(MAKE) -f CMakeFiles/test_bb.dir/build.make CMakeFiles/test_bb.dir/test_bb.cpp.s
 .PHONY : test_bb.cpp.s
-
-test_bed.o: test_bed.cpp.o
-
-.PHONY : test_bed.o
-
-# target to build an object file
-test_bed.cpp.o:
-	$(MAKE) -f CMakeFiles/test_bed.dir/build.make CMakeFiles/test_bed.dir/test_bed.cpp.o
-.PHONY : test_bed.cpp.o
-
-test_bed.i: test_bed.cpp.i
-
-.PHONY : test_bed.i
-
-# target to preprocess a source file
-test_bed.cpp.i:
-	$(MAKE) -f CMakeFiles/test_bed.dir/build.make CMakeFiles/test_bed.dir/test_bed.cpp.i
-.PHONY : test_bed.cpp.i
-
-test_bed.s: test_bed.cpp.s
-
-.PHONY : test_bed.s
-
-# target to generate assembly for a file
-test_bed.cpp.s:
-	$(MAKE) -f CMakeFiles/test_bed.dir/build.make CMakeFiles/test_bed.dir/test_bed.cpp.s
-.PHONY : test_bed.cpp.s
 
 test_cd_bb.o: test_cd_bb.cpp.o
 
@@ -606,32 +566,32 @@ test_sc_ibm.cpp.s:
 	$(MAKE) -f CMakeFiles/test_sc_ibm.dir/build.make CMakeFiles/test_sc_ibm.dir/test_sc_ibm.cpp.s
 .PHONY : test_sc_ibm.cpp.s
 
-test_sphere_bb.o: test_sphere_bb.cpp.o
+test_spheres_bb.o: test_spheres_bb.cpp.o
 
-.PHONY : test_sphere_bb.o
+.PHONY : test_spheres_bb.o
 
 # target to build an object file
-test_sphere_bb.cpp.o:
-	$(MAKE) -f CMakeFiles/test_sphere_bb.dir/build.make CMakeFiles/test_sphere_bb.dir/test_sphere_bb.cpp.o
-.PHONY : test_sphere_bb.cpp.o
+test_spheres_bb.cpp.o:
+	$(MAKE) -f CMakeFiles/test_spheres_bb.dir/build.make CMakeFiles/test_spheres_bb.dir/test_spheres_bb.cpp.o
+.PHONY : test_spheres_bb.cpp.o
 
-test_sphere_bb.i: test_sphere_bb.cpp.i
+test_spheres_bb.i: test_spheres_bb.cpp.i
 
-.PHONY : test_sphere_bb.i
+.PHONY : test_spheres_bb.i
 
 # target to preprocess a source file
-test_sphere_bb.cpp.i:
-	$(MAKE) -f CMakeFiles/test_sphere_bb.dir/build.make CMakeFiles/test_sphere_bb.dir/test_sphere_bb.cpp.i
-.PHONY : test_sphere_bb.cpp.i
+test_spheres_bb.cpp.i:
+	$(MAKE) -f CMakeFiles/test_spheres_bb.dir/build.make CMakeFiles/test_spheres_bb.dir/test_spheres_bb.cpp.i
+.PHONY : test_spheres_bb.cpp.i
 
-test_sphere_bb.s: test_sphere_bb.cpp.s
+test_spheres_bb.s: test_spheres_bb.cpp.s
 
-.PHONY : test_sphere_bb.s
+.PHONY : test_spheres_bb.s
 
 # target to generate assembly for a file
-test_sphere_bb.cpp.s:
-	$(MAKE) -f CMakeFiles/test_sphere_bb.dir/build.make CMakeFiles/test_sphere_bb.dir/test_sphere_bb.cpp.s
-.PHONY : test_sphere_bb.cpp.s
+test_spheres_bb.cpp.s:
+	$(MAKE) -f CMakeFiles/test_spheres_bb.dir/build.make CMakeFiles/test_spheres_bb.dir/test_spheres_bb.cpp.s
+.PHONY : test_spheres_bb.cpp.s
 
 # Help Target
 help:
@@ -642,7 +602,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... temp"
-	@echo "... test_ibm3"
 	@echo "... test_sc_ga"
 	@echo "... test_bb"
 	@echo "... test_ibm2"
@@ -651,18 +610,15 @@ help:
 	@echo "... test_sc_ibm"
 	@echo "... test_cd_ga"
 	@echo "... test_ibm"
-	@echo "... test_sphere_bb"
+	@echo "... test_spheres_bb"
 	@echo "... test_ga"
-	@echo "... test_bed"
+	@echo "... test_ibm3"
 	@echo "... temp.o"
 	@echo "... temp.i"
 	@echo "... temp.s"
 	@echo "... test_bb.o"
 	@echo "... test_bb.i"
 	@echo "... test_bb.s"
-	@echo "... test_bed.o"
-	@echo "... test_bed.i"
-	@echo "... test_bed.s"
 	@echo "... test_cd_bb.o"
 	@echo "... test_cd_bb.i"
 	@echo "... test_cd_bb.s"
@@ -690,9 +646,9 @@ help:
 	@echo "... test_sc_ibm.o"
 	@echo "... test_sc_ibm.i"
 	@echo "... test_sc_ibm.s"
-	@echo "... test_sphere_bb.o"
-	@echo "... test_sphere_bb.i"
-	@echo "... test_sphere_bb.s"
+	@echo "... test_spheres_bb.o"
+	@echo "... test_spheres_bb.i"
+	@echo "... test_spheres_bb.s"
 .PHONY : help
 
 

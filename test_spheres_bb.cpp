@@ -7,6 +7,9 @@ struct myUserData
     double g;
     double nu;
     double R;
+    double K;
+    double Tf;
+    size_t bbtype;
 };
 
 void Report(LBM::Domain &fluid_dom, void *UD)
@@ -19,9 +22,10 @@ void Report(LBM::Domain &fluid_dom, void *UD)
     if(fluid_dom.Time <1e-6)
     {
         String fs;
-        fs.Printf("%s.out","permeability");
+        //fs.Printf("%s.out","permeability");
+        fs.Printf("%s_%d_%d_%g.out","Permeability",dat.bbtype,nx,fluid_dom.Tau);
         dat.oss_ss.open(fs.CStr(),std::ios::out);
-        dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"K\n";
+        dat.oss_ss<<Util::_10_6<<"Time"<<Util::_8s<<"U"<<Util::_8s<<"r"<<Util::_8s<<"K\n";
     }else{
         size_t index = 0;
         // double P1 = 0;
@@ -54,7 +58,7 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         {
             // if(fluid_dom.IsSolid[ix][iy][iz]) continue;
             // num += 1.0;
-            Vec3_t e(0,0,1);
+            Vec3_t e(0,1,0);
             U += dot(fluid_dom.Vel[ix][iy][0],e);
         }
         U /= nx*ny*nz;
@@ -64,8 +68,14 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         // double K = -(U*dat.nu)/((P2-P1)/((double)nz) - dat.g);
         double K = (U*dat.nu)/(dat.g);
         // double K = 8.0*dat.nu*nz*nz*U/(9*nz*(P1-P2));
-        K = (6.0*M_PI*dat.R*K)/(nx*ny*nz);
-        dat.oss_ss<<Util::_10_6<<fluid_dom.Time<<Util::_8s<<U<<Util::_8s<<K<<std::endl;
+        // K = (6.0*M_PI*dat.R*K)/(nx*ny*nz);
+        double r = std::fabs(K-dat.K)/dat.K;
+        dat.oss_ss<<Util::_10_6<<fluid_dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
+        if(r<1e-5)
+        {
+            fluid_dom.Time = dat.Tf;
+        }
+        dat.K = K;
     }
 }
 void Initial(LBM::Domain &dom, double rho, Vec3_t &v0,  Vec3_t &g0)
@@ -88,7 +98,7 @@ void Initial(LBM::Domain &dom, double rho, Vec3_t &v0,  Vec3_t &g0)
     // dom.Rho0 = rho;//very important
 }
 
-int main () try
+int main (int argc, char **argv) try
 {
     size_t collidetype = 1;
     CollideMethod methodc = MRT;
@@ -104,7 +114,13 @@ int main () try
         throw new Fatal("Collide Type is NOT RIGHT!!!!!");    
     }   
     size_t Nproc = 8;
-    size_t h = 100;
+    int h = 200;
+    size_t bbtype = 0;
+    double tau = 2.0;
+    if(argc>=2) bbtype = atoi(argv[1]); 
+    if(argc>=3) h = atoi(argv[2]);
+    if(argc>=4) tau = atof(argv[3]);     
+    if(argc>=5) Nproc = atoi(argv[4]); 
     size_t nx = h;
     size_t ny = h;
     size_t nz = h;
@@ -112,23 +128,44 @@ int main () try
     double dt = 1.0;
     double R = 10.0;
     Vec3_t pos(0.0,0.0,0.0);
-    double nu = (0.6-0.5)/3.0;
+    double nu = (tau-0.5)/3.0;
     //nu = 1.0/30.0;
     LBM::Domain dom(D3Q19,MRT, nu, iVec3_t(nx,ny,nz),dx,dt);
+    if(bbtype == 0)
+    {
+        dom.MethodB = SBB;
+    }else if(bbtype == 1){
+        dom.MethodB = LIBB;        
+    }else if(bbtype == 2){
+        dom.MethodB = QIBB;
+    }else if(bbtype == 3){
+        dom.MethodB = MR;
+    }else if(bbtype == 4){
+        dom.MethodB = CLI;            
+    }else{
+        throw new Fatal("Collide Type is NOT RIGHT!!!!!");    
+    }
+    dom.SetBounceBack();
     myUserData my_dat;
     dom.UserData = &my_dat;
     my_dat.nu = nu;
-    my_dat.g = 2e-5;
+    my_dat.g = 2e-8;
     my_dat.R = R;
-    Vec3_t g0(0.0,0.0,my_dat.g);
+    my_dat.K= 0.0;
+    my_dat.bbtype = bbtype;
+    Vec3_t g0(0.0,my_dat.g,0.0);
     dom.Nproc = Nproc;
 
-
-    std::fstream ifile("sphere.txt",std::ios::in);
+    char const *infilename = "spheres";
+    String fn1;
+    fn1.Printf("%s%d",infilename,h);
+    fn1.append(".txt");
+    std::fstream ifile(fn1.CStr(),std::ios::in);
 	int N = 0;
 	if(!ifile.fail())
 	{
-		ifile>>N;
+		ifile>>h>>R>>N;
+        std::cout<<"size "<<h<<" R "<<R<<" Num "<<N<<std::endl;
 		for(size_t i=0;i<N;++i)
 		{
 			double x;
@@ -139,7 +176,8 @@ int main () try
             dom.AddSphereQ(pos,R);
 			
 		}
-	}          
+	}
+    std::cout<<"Read Finish"<<std::endl;          
 
     //dom.Isq = true;
     // dom.IsF = false;
@@ -154,29 +192,33 @@ int main () try
 
     
 
-    double Tf = 1e5;
-    double dtout = 100;
-    char const * TheFileKey = "test_sphere";
+    double Tf = 2;
+    my_dat.Tf = Tf;
+    double dtout = 1;
+    char const * TheFileKey = "test_sphere1";
     //solving
     dom.StartSolve();
+    
     double tout = 0;
     while(dom.Time<Tf)
     {
         if (dom.Time>=tout)
         {
             
-            String fn;
-            fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            // String fn;
+            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            dom.WriteXDMF(fn.CStr());
-            dom.idx_out++;
+            // dom.WriteXDMF(fn.CStr());
+            // dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;
         }
         (dom.*dom.ptr2collide)();
+        // dom.CollideMRTMR();
         dom.Stream();
-        dom.BounceBackLIBB(false);
+        // dom.BounceBackMR(false);
+        (dom.*dom.ptr2bb)(false);
         dom.CalcProps();
         dom.Time += 1;
     }

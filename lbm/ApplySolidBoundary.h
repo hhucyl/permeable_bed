@@ -136,7 +136,7 @@ inline void Domain::AddSphereQ(Vec3_t &pos, double R)
                 IsSolid[nix][niy][niz] = true;
                 if(std::abs(q1-q2)>1e-6)
                 {
-                    // std::cout<<"!!!!!"<<ix<<" "<<iy<<" "<<iz<<" "<<k<<" "<<q1<<" "<<q2<<std::endl;
+                     std::cout<<"!!!!!"<<ix<<" "<<iy<<" "<<iz<<" "<<k<<" "<<q1<<" "<<q2<<std::endl;
                 }
             }else{
                 if(flag2)
@@ -391,7 +391,9 @@ inline void Domain::BounceBackMR(bool calcF = true)
                 fw[k] = qt*ft[k] + (1-qt) * fto[k];
                 if(IsSolid[oix][oiy][oiz])
                 {
-                    f[Op[k]] = ft[k];
+                    // f[Op[k]] = ft[k];
+                    // Vec3_t v0(0.0,0.0,0.0); 
+                    // f[k] = Feq(k,1.0,v0);
                 }else{
                     //Peng et al 2016 Yu's method
                     double fu = 2.0*W[k]*1.0*dot(C[Op[k]],VelP[ix][iy][iz]);
@@ -404,8 +406,8 @@ inline void Domain::BounceBackMR(bool calcF = true)
                 double FF =  -(t[ix][iy][iz][k]/Nu)*1.0/(4.0*(1+qt)*(1+qt));
                 // std::cout<<k<<" "<<t[ix][iy][iz][k]<<" "<<FF<<" "<<f[Op[k]]<<std::endl;
                 // double FF =  -t[ix][iy][iz][k]*(4.0/(3.0*Nu*(1+qt)*(1+qt)))*((Tau-0.5)/(1.0/S(k)-0.5));
-                f[Op[k]] = ft[k] + k1*fto[k] + k2*ftoo[k] - k1*ft[Op[k]] - k2*fto[Op[k]]  + fu;
-                
+                f[Op[k]] = ft[k] + k1*fto[k] + k2*ftoo[k] - k1*ft[Op[k]] - k2*fto[Op[k]] ;
+                if(f[Op[k]]<0) throw new Fatal("Negative distribution function value!!!!!");   
             }
             
                 
