@@ -3,10 +3,10 @@
 
 inline void Domain::CollideSRT()
 {
+    if(Time<0.5) std::cout<<"--- "<<"SRT"<<" ---"<<std::endl;    
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
-
     #ifdef USE_OMP
     #pragma omp parallel for schedule(static) num_threads(Nproc)
     #endif
@@ -74,6 +74,7 @@ inline void Domain::CollideSRT()
 
 inline void Domain::CollideMRT()
 {
+    if(Time<0.5) std::cout<<"--- "<<"MRT"<<" ---"<<std::endl;    
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);

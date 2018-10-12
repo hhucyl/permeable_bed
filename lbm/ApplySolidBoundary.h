@@ -584,6 +584,9 @@ inline void Domain::AddSphereG(Vec3_t &pos, double R)
     
 }
 
+
+
+
 inline void Domain::AddDiskG(Vec3_t &pos, double R)
 {
     size_t nx = Ndim(0);
