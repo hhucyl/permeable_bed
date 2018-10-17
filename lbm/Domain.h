@@ -145,6 +145,7 @@ public:
     double KernelIBM1(double r, double x);
     void   ApplyIBM2D(Vec3_t &pos, double R);
     void   ApplyIBM3D(Vec3_t &pos, double R);
+    void   ApplyIBM3D();
     void   ApplyIBM3DIM(Vec3_t &pos, double R, size_t IT);
     void   GenPts(Vec3_t &pos, double R, int N);
     void   CalcProps();

@@ -848,6 +848,71 @@ inline void Domain::ApplyIBM3D(Vec3_t &pos, double R)
     
 }
 
+inline void Domain::ApplyIBM3D()
+{
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    int N = points.size();
+    Vec3_t VelIBM[N];
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for(size_t im=0; im<N; im++)
+    {
+        Vec3_t r = points[im];
+        int ixs = std::max(std::floor(r(0) - 3*dx),0.0);
+        int ixe = std::min(std::ceil(r(0) + 3*dx),(double) nx);
+        int iys = std::max(std::floor(r(1) - 3*dx),0.0);
+        int iye = std::min(std::ceil(r(1) + 3*dx),(double) ny);
+        int izs = std::max(std::floor(r(2) - 3*dx),0.0);
+        int ize = std::min(std::ceil(r(2) + 3*dx),(double) nz);
+        VelIBM[im] = 0.0,0.0,0.0;
+        
+        for(int ix= ixs; ix<ixe; ix++)
+        for(int iy= iys; iy<iye; iy++)
+        for(int iz= izs; iz<ize; iz++)
+        {
+            VelIBM[im] += Vel[ix][iy][iz]*KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz); 
+        }
+        
+        
+    }
+    // int ixs = std::max(std::floor(pos(0) - (R+3)*dx),0.0);
+    // int ixe = std::min(std::ceil(pos(0) + (R+3)*dx),(double) nx);
+    // int iys = std::max(std::floor(pos(1) - (R+3)*dx),0.0);
+    // int iye = std::min(std::ceil(pos(1) + (R+3)*dx),(double) ny);
+    // int izs = std::max(std::floor(pos(2) - (R+3)*dx),0.0);
+    // int ize = std::min(std::ceil(pos(2) + (R+3)*dx),(double) nz);
+    int ixs = 0;
+    int ixe = nx;
+    int iys = 0;
+    int iye = ny;
+    int izs = 0;
+    int ize = nz;
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for(int ix= ixs; ix<ixe; ix++)
+    for(int iy= iys; iy<iye; iy++)
+    for(int iz= izs; iz<ize; iz++)
+    // for(size_t ix=0; ix<nx; ++ix)
+    // for(size_t iy=0; iy<ny; ++iy)
+    // for(size_t iz=0; iz<nz; ++iz)  
+    {
+        // Flbm[ix][iy][iz] = 0.0,0.0,0.0;
+        for(size_t im=0; im<N; im++)
+        {
+            Vec3_t r = points[im];
+            if(std::fabs(KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz))<1e-9) continue;       
+            Vec3_t FIBM = 2.0*Rho[ix][iy][iz]*(0.0-VelIBM[im])/dt;
+            Flbm[ix][iy][iz] += FIBM*KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz)/(dx*dx*dx)*dS[im]; 
+        }
+        Vel[ix][iy][iz] += dt/(2.0*Rho[ix][iy][iz])*Flbm[ix][iy][iz];
+        
+    }
+    
+}
 
 inline void Domain::ApplyIBM3DIM(Vec3_t &pos, double R, size_t IT)
 {

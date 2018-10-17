@@ -140,6 +140,19 @@ test_ibm3/fast:
 .PHONY : test_ibm3/fast
 
 #=============================================================================
+# Target rules for targets named test_ibm2
+
+# Build rule for target.
+test_ibm2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_ibm2
+.PHONY : test_ibm2
+
+# fast build rule for target.
+test_ibm2/fast:
+	$(MAKE) -f CMakeFiles/test_ibm2.dir/build.make CMakeFiles/test_ibm2.dir/build
+.PHONY : test_ibm2/fast
+
+#=============================================================================
 # Target rules for targets named test_sc_ga
 
 # Build rule for target.
@@ -164,19 +177,6 @@ test_bb: cmake_check_build_system
 test_bb/fast:
 	$(MAKE) -f CMakeFiles/test_bb.dir/build.make CMakeFiles/test_bb.dir/build
 .PHONY : test_bb/fast
-
-#=============================================================================
-# Target rules for targets named test_ibm2
-
-# Build rule for target.
-test_ibm2: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_ibm2
-.PHONY : test_ibm2
-
-# fast build rule for target.
-test_ibm2/fast:
-	$(MAKE) -f CMakeFiles/test_ibm2.dir/build.make CMakeFiles/test_ibm2.dir/build
-.PHONY : test_ibm2/fast
 
 #=============================================================================
 # Target rules for targets named test_sc_ibm
@@ -268,6 +268,19 @@ test_spheres_ga: cmake_check_build_system
 test_spheres_ga/fast:
 	$(MAKE) -f CMakeFiles/test_spheres_ga.dir/build.make CMakeFiles/test_spheres_ga.dir/build
 .PHONY : test_spheres_ga/fast
+
+#=============================================================================
+# Target rules for targets named test_spheres_ibm
+
+# Build rule for target.
+test_spheres_ibm: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_spheres_ibm
+.PHONY : test_spheres_ibm
+
+# fast build rule for target.
+test_spheres_ibm/fast:
+	$(MAKE) -f CMakeFiles/test_spheres_ibm.dir/build.make CMakeFiles/test_spheres_ibm.dir/build
+.PHONY : test_spheres_ibm/fast
 
 #=============================================================================
 # Target rules for targets named test_ga
@@ -633,6 +646,33 @@ test_spheres_ga.cpp.s:
 	$(MAKE) -f CMakeFiles/test_spheres_ga.dir/build.make CMakeFiles/test_spheres_ga.dir/test_spheres_ga.cpp.s
 .PHONY : test_spheres_ga.cpp.s
 
+test_spheres_ibm.o: test_spheres_ibm.cpp.o
+
+.PHONY : test_spheres_ibm.o
+
+# target to build an object file
+test_spheres_ibm.cpp.o:
+	$(MAKE) -f CMakeFiles/test_spheres_ibm.dir/build.make CMakeFiles/test_spheres_ibm.dir/test_spheres_ibm.cpp.o
+.PHONY : test_spheres_ibm.cpp.o
+
+test_spheres_ibm.i: test_spheres_ibm.cpp.i
+
+.PHONY : test_spheres_ibm.i
+
+# target to preprocess a source file
+test_spheres_ibm.cpp.i:
+	$(MAKE) -f CMakeFiles/test_spheres_ibm.dir/build.make CMakeFiles/test_spheres_ibm.dir/test_spheres_ibm.cpp.i
+.PHONY : test_spheres_ibm.cpp.i
+
+test_spheres_ibm.s: test_spheres_ibm.cpp.s
+
+.PHONY : test_spheres_ibm.s
+
+# target to generate assembly for a file
+test_spheres_ibm.cpp.s:
+	$(MAKE) -f CMakeFiles/test_spheres_ibm.dir/build.make CMakeFiles/test_spheres_ibm.dir/test_spheres_ibm.cpp.s
+.PHONY : test_spheres_ibm.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -643,9 +683,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... temp"
 	@echo "... test_ibm3"
+	@echo "... test_ibm2"
 	@echo "... test_sc_ga"
 	@echo "... test_bb"
-	@echo "... test_ibm2"
 	@echo "... test_sc_ibm"
 	@echo "... test_cd_ga"
 	@echo "... test_ibm"
@@ -653,6 +693,7 @@ help:
 	@echo "... test_sc_bb"
 	@echo "... test_cd_bb"
 	@echo "... test_spheres_ga"
+	@echo "... test_spheres_ibm"
 	@echo "... test_ga"
 	@echo "... temp.o"
 	@echo "... temp.i"
@@ -693,6 +734,9 @@ help:
 	@echo "... test_spheres_ga.o"
 	@echo "... test_spheres_ga.i"
 	@echo "... test_spheres_ga.s"
+	@echo "... test_spheres_ibm.o"
+	@echo "... test_spheres_ibm.i"
+	@echo "... test_spheres_ibm.s"
 .PHONY : help
 
 
