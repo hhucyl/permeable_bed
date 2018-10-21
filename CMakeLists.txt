@@ -30,6 +30,7 @@ SET(PROGS
     test_spheres_bb
     test_spheres_ga
     test_spheres_ibm
+    test_spheres_ibm_s
     test_bb
     test_ga
     test_ibm
