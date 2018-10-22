@@ -74,7 +74,7 @@ void Report(LBM::Domain &dom, void *UD)
         // K = (6.0*M_PI*dat.R*K)/(nx*ny*nz);
         double r = std::fabs(K-dat.K)/dat.K;
         dat.oss_ss<<Util::_10_6<<dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
-        if(r<1e-5&&U<0&&std::fabs(U)>1.0)
+        if(r<1e-5||U<0||std::fabs(U)>1.0)
         {
             dom.Time = dat.Tf;
         }

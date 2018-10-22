@@ -72,7 +72,7 @@ void Report(LBM::Domain &fluid_dom, void *UD)
 		K /= nx*ny;
         double r = std::fabs(K-dat.K)/dat.K;
         dat.oss_ss<<Util::_10_6<<fluid_dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
-        if(r<1e-5&&U<0&&std::fabs(U)>1.0)
+        if(r<1e-5||U<0||std::fabs(U)>1.0)
         {
             fluid_dom.Time = dat.Tf;
         }
