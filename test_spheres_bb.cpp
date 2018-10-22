@@ -69,9 +69,10 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         double K = (U*dat.nu)/(dat.g);
         // double K = 8.0*dat.nu*nz*nz*U/(9*nz*(P1-P2));
         // K = (6.0*M_PI*dat.R*K)/(nx*ny*nz);
+		K /= nx*ny;
         double r = std::fabs(K-dat.K)/dat.K;
         dat.oss_ss<<Util::_10_6<<fluid_dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
-        if(r<1e-5)
+        if(r<1e-5&&U<0&&std::fabs(U)>1.0)
         {
             fluid_dom.Time = dat.Tf;
         }
@@ -192,9 +193,9 @@ int main (int argc, char **argv) try
 
     
 
-    double Tf = 2;
+    double Tf = 1e6;
     my_dat.Tf = Tf;
-    double dtout = 1;
+    double dtout = 1e2;
     char const * TheFileKey = "test_sphere1";
     //solving
     dom.StartSolve();
@@ -205,11 +206,11 @@ int main (int argc, char **argv) try
         if (dom.Time>=tout)
         {
             
-            // String fn;
-            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            //String fn;
+            //fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            // dom.WriteXDMF(fn.CStr());
-            // dom.idx_out++;
+            //dom.WriteXDMF(fn.CStr());
+            //dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;

@@ -8,13 +8,9 @@ do
     # do
         
         ./test_spheres_ibm -2 90 $tau 12 1
-        ./test_spheres_ibm_s -2 90 $tau 12 0 
-        # ./test_spheres_ga -1 $h $tau 12
-        # ./test_spheres_ibm -2 $h $tau 12
-        # ./test_spheres_ga -1 30 $tau 12
-        # ./test_spheres_ibm -2 30 $tau 12
-        # ./test_spheres_ibm -3 30 $tau 12
-        # ./test_spheres_ga -4 30 $tau 12
+        ./test_spheres_ibm_s -2 90 $tau 12 0
+	./test_spheres_ibm1 -3 90 $tau 12 1
+        ./test_spheres_ibm_s1 -3 90 $tau 12 0 
     # done
 done
 
@@ -22,4 +18,6 @@ for h in '30' '50' '90' '110' '130' '200'
 do
 	./test_spheres_ibm -2 $h 1.6 12 1
 	./test_spheres_ibm_s -2 $h 1.6 12 0
+	./test_spheres_ibm1 -3 $h 1.6 12 1
+	./test_spheres_ibm_s1 -3 $h 1.6 12 0
 done
