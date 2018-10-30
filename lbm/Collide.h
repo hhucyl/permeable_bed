@@ -190,6 +190,8 @@ inline void Domain::CollideMRT()
 
 inline void Domain::CollideMRTLES()
 {
+    if(Time<0.5) std::cout<<"--- "<<"MRTLES"<<" ---"<<std::endl;    
+
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
@@ -275,6 +277,7 @@ inline void Domain::CollideMRTLES()
 
 inline void Domain::CollideMRTMR()
 {
+    if(Time<0.5) std::cout<<"--- "<<"MRT"<<" ---"<<std::endl;    
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
@@ -409,6 +412,8 @@ inline void Domain::MeqD3Q19(double *m, double rho, Vec3_t &vel)
 
 inline void Domain::CollideSRTIBM()
 {
+    if(Time<0.5) std::cout<<"--- "<<"SRT"<<" ---"<<std::endl;    
+
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);
@@ -454,6 +459,8 @@ inline void Domain::CollideSRTIBM()
 
 inline void Domain::CollideMRTIBM()
 {
+    if(Time<0.5) std::cout<<"--- "<<"MRT"<<" ---"<<std::endl;    
+
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
     size_t nz = Ndim(2);

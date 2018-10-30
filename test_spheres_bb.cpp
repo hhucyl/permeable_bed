@@ -180,7 +180,7 @@ int main (int argc, char **argv) try
 	}
     std::cout<<"Read Finish"<<std::endl;          
 
-    //dom.Isq = true;
+    dom.Isq = true;
     // dom.IsF = false;
     // dom.IsFt = false;
     //bounndary
@@ -193,10 +193,10 @@ int main (int argc, char **argv) try
 
     
 
-    double Tf = 1e6;
+    double Tf = 2;
     my_dat.Tf = Tf;
-    double dtout = 1e2;
-    char const * TheFileKey = "test_sphere1";
+    double dtout = 1;
+    char const * TheFileKey = "test_spheres";
     //solving
     dom.StartSolve();
     
@@ -206,11 +206,11 @@ int main (int argc, char **argv) try
         if (dom.Time>=tout)
         {
             
-            //String fn;
+            String fn;
             //fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
-            
-            //dom.WriteXDMF(fn.CStr());
-            //dom.idx_out++;
+			fn.Printf("%s_%d_%d_%g",TheFileKey,my_dat.bbtype,nx,dom.Tau);
+            dom.WriteXDMF(fn.CStr());
+            dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;

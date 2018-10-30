@@ -26,6 +26,7 @@ SET(PROGS
     test_cd_ga
     test_cd_bb
     test_sc_ga
+    test_sc_ga1
     test_sc_bb
     test_spheres_bb
     test_spheres_ga
@@ -40,6 +41,9 @@ SET(PROGS
     test_ibm2
     test_ibm3
     test_sc_ibm
+    test_sc_ibm1
+    test_sc_ibm_s
+    test_sc_ibm_s1
     temp
 )
 

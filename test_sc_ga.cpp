@@ -156,7 +156,8 @@ int main (int argc, char **argv) try
     if(argc>=2) bbtype = atoi(argv[1]); 
     if(argc>=3) h = atoi(argv[2]);
     if(argc>=4) tau = atof(argv[3]);     
-    if(argc>=5) Nproc = atoi(argv[4]); 
+    if(argc>=5) Nproc = atoi(argv[4]);
+    if(argc>=6) collidetype = atoi(argv[5]); 
 
     size_t nx = h;
     size_t ny = h;

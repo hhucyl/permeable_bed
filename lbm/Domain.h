@@ -512,7 +512,7 @@ inline void Domain::StartSolve()
     }
     printf("\033[01;33m--- Solving ---\033[0m\n");
     printf("--- Tau = %g ---\n",Tau);
-    // StartTime = std::clock();
+    StartTime = std::clock();
     idx_out = 0;
 }
 inline void Domain::EndSolve()
