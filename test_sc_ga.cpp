@@ -136,6 +136,18 @@ void addspheres2(LBM::Domain &dom, Vec3_t &pos,double R, double ddx)
 int main (int argc, char **argv) try
 {
     size_t collidetype = 1;
+    
+    
+    size_t Nproc = 8;
+    size_t h = 30;
+    int bbtype = -4;
+    double tau = 0.6;
+    if(argc>=2) bbtype = atoi(argv[1]); 
+    if(argc>=3) h = atoi(argv[2]);
+    if(argc>=4) tau = atof(argv[3]);     
+    if(argc>=5) Nproc = atoi(argv[4]);
+    if(argc>=6) collidetype = atoi(argv[5]);
+
     CollideMethod methodc = MRT;
     if(collidetype == 0)
     {
@@ -147,17 +159,7 @@ int main (int argc, char **argv) try
         // ptr2meq = &LBM::Domain::MeqD2Q9;         
     }else{
         throw new Fatal("Collide Type is NOT RIGHT!!!!!");    
-    }
-    
-    size_t Nproc = 8;
-    size_t h = 30;
-    int bbtype = -4;
-    double tau = 0.6;
-    if(argc>=2) bbtype = atoi(argv[1]); 
-    if(argc>=3) h = atoi(argv[2]);
-    if(argc>=4) tau = atof(argv[3]);     
-    if(argc>=5) Nproc = atoi(argv[4]);
-    if(argc>=6) collidetype = atoi(argv[5]); 
+    } 
 
     size_t nx = h;
     size_t ny = h;
