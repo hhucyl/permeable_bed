@@ -26,6 +26,7 @@ SET(PROGS
     test_cd_ga
     test_cd_bb
     test_sc_ga
+    test_sc_ga_t
     test_sc_ga1
     test_sc_bb
     test_spheres_bb

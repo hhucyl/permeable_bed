@@ -223,11 +223,11 @@ int main (int argc, char **argv) try
         if (dom.Time>=tout)
         {
             
-            // String fn;
-            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            String fn;
+            fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            // dom.WriteXDMF(fn.CStr());
-            // dom.idx_out++;
+            dom.WriteXDMF(fn.CStr());
+            dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" "<<Tf<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;

@@ -37,8 +37,8 @@ inline void Domain::CollideSRT()
             // while (valid)
             // {
                 // valid = false;
-            double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));
-            // Bn = Gamma[ix][iy][iz];    
+            //double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));
+            double Bn = Gamma[ix][iy][iz];    
                 for (size_t k=0;k<Nneigh;k++)
                 {
                     double ForceTerm = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
@@ -131,8 +131,8 @@ inline void Domain::CollideMRT()
             //         fneq[i] += Minv(i,j)*m[j];                   
             //     }
             // }
-             double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));
-            //Bn = Gamma[ix][iy][iz];
+            // double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));
+            double Bn = Gamma[ix][iy][iz];
             for (size_t k=0; k<Nneigh; k++)
             {
                 double ForceTerm = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
@@ -412,7 +412,7 @@ inline void Domain::MeqD3Q19(double *m, double rho, Vec3_t &vel)
 
 inline void Domain::CollideSRTIBM()
 {
-    if(Time<0.5) std::cout<<"--- "<<"SRT"<<" ---"<<std::endl;    
+    if(Time<0.5) std::cout<<"--- "<<"SRTIBM"<<" ---"<<std::endl;    
 
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
@@ -459,7 +459,7 @@ inline void Domain::CollideSRTIBM()
 
 inline void Domain::CollideMRTIBM()
 {
-    if(Time<0.5) std::cout<<"--- "<<"MRT"<<" ---"<<std::endl;    
+    if(Time<0.5) std::cout<<"--- "<<"MRTIBM"<<" ---"<<std::endl;    
 
     size_t nx = Ndim(0);
     size_t ny = Ndim(1);
@@ -509,6 +509,138 @@ inline void Domain::CollideMRTIBM()
             }
         }
     }
+}
+
+inline void Domain::CollideSRTPSM()
+{
+    if(Time<0.5) std::cout<<"--- "<<"SRTPSM"<<" ---"<<std::endl;    
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for (size_t ix=0;ix<nx;ix++)
+    for (size_t iy=0;iy<ny;iy++)
+    for (size_t iz=0;iz<nz;iz++)
+    {
+        if (!IsSolid[ix][iy][iz])
+        {
+            // double NonEq[Nneigh];
+            double Q = 0.0;
+            double tau = Tau;
+            double rho = Rho[ix][iy][iz];
+            Vec3_t vel = Vel[ix][iy][iz];
+            double VdotV = dot(vel,vel);
+
+            //double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));            
+            double Bn = Gamma[ix][iy][iz];    
+            Vec3_t VelPt(0.0,0.0,0.0);
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                double Fvpp     = Feq(Op[k],rho,VelPt);
+                double Fvp      = Feq(k    ,rho,VelPt);
+                double Omega    = F[ix][iy][iz][Op[k]] - Fvpp - (F[ix][iy][iz][k] - Fvp);
+                double ForceTerm = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
+
+                // Vec3_t BFt(0.0, 0.0, 0.0);
+                // BFt = 3.0*(C[k] - vel)/(Cs*Cs) + 9.0*dot(C[k],vel)/(Cs*Cs*Cs*Cs)*C[k]; 
+                // double ForceTerm = dt*(1 - 1.0/(2.0*Tau))*W[k]*dot(BFt,BForce[ix][iy][iz]);
+                double NonEq = F[ix][iy][iz][k] - Feq(k,rho,vel); 
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][k] - (1-Bn)*NonEq/tau + Bn*Omega + ForceTerm;
+                
+            }
+            
+        }
+        else
+        {
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][Op[k]];
+            }
+        }
+    }
+}
+
+inline void Domain::CollideMRTPSM()
+{
+    if(Time<0.5) std::cout<<"--- "<<"MRTPSM"<<" ---"<<std::endl;    
+    size_t nx = Ndim(0);
+    size_t ny = Ndim(1);
+    size_t nz = Ndim(2);
+    #ifdef USE_OMP
+    #pragma omp parallel for schedule(static) num_threads(Nproc)
+    #endif
+    for (size_t ix=0;ix<nx;ix++)
+    for (size_t iy=0;iy<ny;iy++)
+    for (size_t iz=0;iz<nz;iz++)
+    {
+        if (!IsSolid[ix][iy][iz])
+        {
+            
+            double rho = Rho[ix][iy][iz];
+            Vec3_t vel = Vel[ix][iy][iz];
+            double *f = F[ix][iy][iz];
+            double *m = Ftemp[ix][iy][iz];
+            double fneq[Nneigh];
+            int n=Nneigh,mm=1;
+            double a = 1.0,b = 0.0;
+            dgemv_("N",&n,&n,&a,M.data,&n,f,&mm,&b,m,&mm);
+            // for(size_t i=0; i<Nneigh; i++)
+            // {
+            //     m[i] = 0.0;
+            //     for(size_t j=0; j<Nneigh; j++)
+            //     {
+            //         m[i] += M(i,j)*f[j];                   
+            //     }
+            // }
+            
+            
+            (this->*ptr2meq)(m,rho,vel);
+            // MeqD3Q19(m,rho,vel);
+            
+            dgemv_("N",&n,&n,&a,Minv.data,&n,m,&mm,&b,fneq,&mm);
+            // for(size_t i=0; i<Nneigh; i++)
+            // {
+            //     fneq[i] = 0.0;
+            //     for(size_t j=0; j<Nneigh; j++)
+            //     {
+            //         fneq[i] += Minv(i,j)*m[j];                   
+            //     }
+            // }
+            //double Bn = (Gamma[ix][iy][iz]*(Tau-0.5))/((1.0-Gamma[ix][iy][iz])+(Tau-0.5));
+            double Bn = Gamma[ix][iy][iz];
+            Vec3_t VelPt(0.0,0.0,0.0);
+
+            for (size_t k=0; k<Nneigh; k++)
+            {
+                double ForceTerm = dt*3.0*W[k]*dot(BForce[ix][iy][iz],C[k]);
+                // Vec3_t BFt(0.0, 0.0, 0.0);
+                // BFt = 3.0*(C[k] - vel)/(Cs*Cs) + 9.0*dot(C[k],vel)/(Cs*Cs*Cs*Cs)*C[k]; 
+                // double ForceTerm = dt*(1 - 1.0/(2.0*Tau))*W[k]*dot(BFt,BForce[ix][iy][iz]); 
+                double Fvpp     = Feq(Op[k],rho,VelPt);
+                double Fvp      = Feq(k    ,rho,VelPt);
+                double Omega    = F[ix][iy][iz][Op[k]] - Fvpp - (F[ix][iy][iz][k] - Fvp);
+
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][k] - (1-Bn)*fneq[k] + Bn*Omega + ForceTerm;
+                if(Ftemp[ix][iy][iz][k]<0) Ftemp[ix][iy][iz][k] = 0;
+                // if(ix == 1 &&iy==10&&iz ==0)
+                // {
+                //     std::cout<<"F "<<k<<"="<<F[ix][iy][iz][k]<<std::endl;
+                //     std::cout<<"Ft "<<k<<"="<<Ftemp[ix][iy][iz][k]<<std::endl;
+                // }
+            }
+
+        }
+        else
+        {
+            for (size_t k=0;k<Nneigh;k++)
+            {
+                Ftemp[ix][iy][iz][k] = F[ix][iy][iz][Op[k]];
+            }
+        }
+    }
+
 }
 
 #endif

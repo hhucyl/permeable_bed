@@ -228,11 +228,11 @@ int main (int argc, char **argv) try
 
     
 
-    double Tf = 1e6;
+    double Tf = 2;
     my_dat.Tf = Tf;
     
-    double dtout = 1e2;
-    char const * TheFileKey = "test_sc";
+    double dtout = 1;
+    char const * TheFileKey = "test_spheres";
     //solving
     dom.StartSolve();
     double tout = 0;
@@ -241,11 +241,11 @@ int main (int argc, char **argv) try
         if (dom.Time>=tout)
         {
             
-            // String fn;
-            // fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
+            String fn;
+            fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
             
-            // dom.WriteXDMF(fn.CStr());
-            // dom.idx_out++;
+            dom.WriteXDMF(fn.CStr());
+            dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" "<<Tf<<" ---"<<std::endl;
             Report(dom,&my_dat); 
             tout += dtout;

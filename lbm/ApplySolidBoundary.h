@@ -807,7 +807,7 @@ inline void Domain::ApplyIBM3D(Vec3_t &pos, double R)
         for(int iy= iys; iy<iye; iy++)
         for(int iz= izs; iz<ize; iz++)
         {
-            VelIBM[im] += Vel[ix][iy][iz]*KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz); 
+            VelIBM[im] += Vel[ix][iy][iz]*KernelIBM(r(0),ix)*KernelIBM(r(1),iy)*KernelIBM(r(2),iz); 
         }
         
         
@@ -838,9 +838,9 @@ inline void Domain::ApplyIBM3D(Vec3_t &pos, double R)
         for(size_t im=0; im<N; im++)
         {
             Vec3_t r = points[im];
-            if(std::fabs(KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz))<1e-9) continue;       
+            if(std::fabs(KernelIBM(r(0),ix)*KernelIBM(r(1),iy)*KernelIBM(r(2),iz))<1e-9) continue;       
             Vec3_t FIBM = 2.0*Rho[ix][iy][iz]*(0.0-VelIBM[im])/dt;
-            Flbm[ix][iy][iz] += FIBM*KernelIBM1(r(0),ix)*KernelIBM1(r(1),iy)*KernelIBM1(r(2),iz)/(dx*dx*dx)*dS[im]; 
+            Flbm[ix][iy][iz] += FIBM*KernelIBM(r(0),ix)*KernelIBM(r(1),iy)*KernelIBM(r(2),iz)/(dx*dx*dx)*dS[im]; 
         }
         Vel[ix][iy][iz] += dt/(2.0*Rho[ix][iy][iz])*Flbm[ix][iy][iz];
         

@@ -127,6 +127,8 @@ public:
     
     void   CollideSRTIBM();
     void   CollideMRTIBM();
+    void   CollideSRTPSM();
+    void   CollideMRTPSM();
 
     void   MeqD2Q9(double *m, double rho, Vec3_t &vel);                      
     void   MeqD3Q15(double *m, double rho, Vec3_t &vel);             
