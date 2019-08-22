@@ -228,10 +228,10 @@ int main (int argc, char **argv) try
 
     
 
-    double Tf = 2;
+    double Tf = 1e6;
     my_dat.Tf = Tf;
     
-    double dtout = 1;
+    double dtout = 1e3;
     char const * TheFileKey = "test_spheres";
     //solving
     dom.StartSolve();

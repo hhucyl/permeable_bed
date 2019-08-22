@@ -46,6 +46,8 @@ SET(PROGS
     test_sc_ibm_s
     test_sc_ibm_s1
     temp
+    spheres_show
+    sc_show
 )
 
 FOREACH(var ${PROGS})

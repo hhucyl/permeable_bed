@@ -60,9 +60,9 @@ void Domain::WriteXDMF(char const * FileKey)
             BF   /= Step*Step*Step;
             Ga   [i]  = (double) gamma;
             Density [i]  = (double) rho;            
-            Vvec[3*i  ]  = (double) vel(0);//*(1.0-Ga[i]);
-            Vvec[3*i+1]  = (double) vel(1);//*(1.0-Ga[i]);
-            Vvec[3*i+2]  = (double) vel(2);//*(1.0-Ga[i]);
+            Vvec[3*i  ]  = (double) vel(0)*(1.0-Ga[i]);
+            Vvec[3*i+1]  = (double) vel(1)*(1.0-Ga[i]);
+            Vvec[3*i+2]  = (double) vel(2)*(1.0-Ga[i]);
             Vvecp[3*i  ]  = (double) velp(0);
             Vvecp[3*i+1]  = (double) velp(1);
             Vvecp[3*i+2]  = (double) velp(2);
