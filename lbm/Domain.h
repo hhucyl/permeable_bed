@@ -354,7 +354,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
             double s   = 8.0*(2.0-1.0/tau)/(8.0-1.0/tau);
             S.Resize(Nneigh);
             // S = 0.0,1.0/tau,1.0/tau,0.0,s,0.0,s,0.0,s,1.0/tau,1.0/tau,1.0/tau,1.0/tau,1.0/tau,s;
-            S = 0.0,1.0/tau,1./tau,0.0,s,0.0,s,0.0,s,1.0/tau,s,1.0/tau,s,1.0/tau,1.0/tau,1.0/tau,s,s,s;
+            S = 0.0,1.0/tau,1.0/tau,0.0,s,0.0,s,0.0,s,1.0/tau,s,1.0/tau,s,1.0/tau,1.0/tau,1.0/tau,s,s,s;
             ptr2collide = &LBM::Domain::CollideMRT;
             we = 3.0;
             wej = -11.0/2.0;
