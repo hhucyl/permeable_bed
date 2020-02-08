@@ -30,6 +30,8 @@
 *.exe
 *.out
 *.app
+*.h5
+*.xmf
 
 /CMakeFiles
 CMakeCache.txt
