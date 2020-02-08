@@ -69,7 +69,7 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         double K = (U*dat.nu)/(dat.g);
         // double K = 8.0*dat.nu*nz*nz*U/(9*nz*(P1-P2));
         // K = (6.0*M_PI*dat.R*K)/(nx*ny*nz);
-		K /= dat.R*dat.R;
+		K /= 4*dat.R*dat.R;
         double r = std::fabs(K-dat.K)/dat.K;
         dat.oss_ss<<Util::_10_6<<fluid_dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
         if(r<1e-5||U<0||std::fabs(U)>1.0)
