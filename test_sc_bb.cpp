@@ -147,8 +147,8 @@ int main (int argc, char **argv) try
     }   
     size_t Nproc = 8;
     size_t h = 30;
-    double tau = 2.0;
-    size_t bbtype = 1;
+    double tau = 1.4;
+    size_t bbtype = 3;
     if(argc>=2) bbtype = atoi(argv[1]); 
     if(argc>=3) h = atoi(argv[2]);
     if(argc>=4) tau = atof(argv[3]);     

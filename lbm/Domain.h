@@ -133,6 +133,7 @@ public:
     void   MeqD2Q9(double *m, double rho, Vec3_t &vel);                      
     void   MeqD3Q15(double *m, double rho, Vec3_t &vel);             
     void   MeqD3Q19(double *m, double rho, Vec3_t &vel);             
+    void   MeqD3Q19S(double *m, double rho, Vec3_t &vel);             
     
                            ///< The collide step of LBM with MRT
     void   CollideSRT();                                                           ///< The collide step of LBM for single component simulations
@@ -336,7 +337,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
         W      = WEIGHTSD3Q19;
         C      = LVELOCD3Q19;
         Op     = OPPOSITED3Q19;
-        ptr2meq = &LBM::Domain::MeqD3Q19;
+        ptr2meq = &LBM::Domain::MeqD3Q19S;
         ptr2collide = &LBM::Domain::CollideSRT; 
         if(TheMethodC == MRT)
         {
@@ -353,7 +354,7 @@ inline Domain::Domain(LBMethod TheMethod, CollideMethod TheMethodC,  double Then
             double s   = 8.0*(2.0-1.0/tau)/(8.0-1.0/tau);
             S.Resize(Nneigh);
             // S = 0.0,1.0/tau,1.0/tau,0.0,s,0.0,s,0.0,s,1.0/tau,1.0/tau,1.0/tau,1.0/tau,1.0/tau,s;
-            S = 0.0,s,s,0.0,s,0.0,s,0.0,s,1.0/tau,s,1.0/tau,s,1.0/tau,1.0/tau,1.0/tau,s,s,s;
+            S = 0.0,1.0/tau,1./tau,0.0,s,0.0,s,0.0,s,1.0/tau,s,1.0/tau,s,1.0/tau,1.0/tau,1.0/tau,s,s,s;
             ptr2collide = &LBM::Domain::CollideMRT;
             we = 3.0;
             wej = -11.0/2.0;

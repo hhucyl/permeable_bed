@@ -1,7 +1,7 @@
 clear
 clc
-data = xlsread('Sum.xlsx');
-data1 = xlsread('Sum.xlsx','Sheet2');
+data = xlsread('Sum3.xlsx');
+data1 = xlsread('Sum3.xlsx','Sheet2');
 tau = data(5:end,1);
 nu = (tau-0.5)./3;
 Data = [data(5:end,2:end),data1(6:end,7:end)];
@@ -22,8 +22,9 @@ legend_str = {'SBB-MRT','LIBB-MRT','QIBB-MRT','MR-MRT',...
     };
 legend(legend_str,'location','southeast');
 legend boxoff
-grid on
-axis([min(x) max(x) 0.7 1.3])
+% grid on
+axis([min(x) max(x) 0.3 1.5])
+set(gca,'ytick',0.3:0.1:1.5)
 xlabel('Viscosity')
 ylabel('\itk^{*}_{\rmsimulated}/k^{*}_{\rmanalytical}')
 picture(15)
@@ -37,17 +38,17 @@ for i=1:5
     
     hold on
 end
-grid on
+% grid on
 axis([min(x) max(x) 0.7 1.3])
 xlabel('Viscosity')
 ylabel('\itk^{*}_{\rmsimulated}/k^{*}_{\rmanalytical}')
 legend(h1(1:2),legend_str{1:2},'orientation','horizontal','location','north');
 legend boxoff
-picture(15)
+picture(14)
 ah = axes('position',get(gca,'position'),'visible','off');
 legend(ah,h1(3:5),legend_str{3:5},'orientation','horizontal','location','south');
 legend boxoff
-picture(15)
+picture(14)
 subplot(3,2,4)
 num = [6,7,10,11];
 for i=1:numel(num)
@@ -58,11 +59,11 @@ for i=1:numel(num)
 end
 legend(legend_str{num},'orientation','horizontal','location','south')
 legend boxoff
-grid on
+% grid on
 axis([min(x) max(x) 0.7 1.3])
 xlabel('Viscosity')
 ylabel('\itk^{*}_{\rmsimulated}/k^{*}_{\rmanalytical}')
-picture(15)
+picture(14)
 subplot(3,2,6)
 num = [8,9,12,13];
 for i=1:numel(num)
@@ -71,10 +72,10 @@ for i=1:numel(num)
     plot(x,y,char(marker(num(i))),'markersize',markersize)
     hold on
 end
-grid on
+% grid on
 axis([min(x) max(x) 0.7 1.3])
 xlabel('Viscosity')
 ylabel('\itk^{*}_{\rmsimulated}/k^{*}_{\rmanalytical}')
 legend(legend_str{num},'orientation','horizontal','location','south')
 legend boxoff
-picture(15)
+picture(14)

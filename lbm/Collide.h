@@ -410,6 +410,31 @@ inline void Domain::MeqD3Q19(double *m, double rho, Vec3_t &vel)
     // m[18] = S(18)*  m[18];
 }
 
+inline void Domain::MeqD3Q19S(double *m, double rho, Vec3_t &vel)
+{
+    m[ 0] = S( 0)*( m[ 0] - rho );
+    m[ 1] = S( 1)*( m[ 1] - (-11.0*rho ));
+    m[ 2] = S( 2)*( m[ 2] - (we*rho ));
+    m[ 3] = 0.0;
+    m[ 4] = S( 4)*( m[ 4] - (-2.0/3.0*rho*vel(0)) );
+    m[ 5] = 0.0;
+    m[ 6] = S( 6)*( m[ 6] - (-2.0/3.0*rho*vel(1)) );
+    m[ 7] = 0.0;
+    m[ 8] = S( 8)*( m[ 8] - (-2.0/3.0*rho*vel(2)) );
+    m[ 9] = S( 9)*( m[ 9] - 0 );
+    m[10] = S(10)*( m[10] - 0 );
+    m[11] = S(11)*( m[11] - 0 );
+    m[12] = S(12)*( m[12] - 0 );
+    m[13] = S(13)*( m[13] - 0 );
+    m[14] = S(14)*( m[14] - 0 );
+    m[15] = S(15)*( m[15] - 0 );
+    m[16] = S(16)*  m[16];
+    m[17] = S(17)*  m[17];
+    m[18] = S(18)*  m[18];
+
+ 
+}
+
 inline void Domain::CollideSRTIBM()
 {
     if(Time<0.5) std::cout<<"--- "<<"SRTIBM"<<" ---"<<std::endl;    
