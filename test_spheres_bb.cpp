@@ -69,7 +69,7 @@ void Report(LBM::Domain &fluid_dom, void *UD)
         double K = (U*dat.nu)/(dat.g);
         // double K = 8.0*dat.nu*nz*nz*U/(9*nz*(P1-P2));
         // K = (6.0*M_PI*dat.R*K)/(nx*ny*nz);
-		K /= nx*ny;
+		K /= 4*dat.R*dat.R;
         double r = std::fabs(K-dat.K)/dat.K;
         dat.oss_ss<<Util::_10_6<<fluid_dom.Time<<Util::_8s<<U<<Util::_8s<<r<<Util::_8s<<K<<std::endl;
         if(r<1e-5||U<0||std::fabs(U)>1.0)
@@ -178,6 +178,8 @@ int main (int argc, char **argv) try
 			
 		}
 	}
+    my_dat.R = R;
+    std::cout<<"my_dat.R "<<my_dat.R<<std::endl;
     std::cout<<"Read Finish"<<std::endl;          
 
     dom.Isq = true;
@@ -193,9 +195,9 @@ int main (int argc, char **argv) try
 
     
 
-    double Tf = 2;
+    double Tf = 1e6;
     my_dat.Tf = Tf;
-    double dtout = 1;
+    double dtout = 1e2;
     char const * TheFileKey = "test_spheres";
     //solving
     dom.StartSolve();
@@ -208,8 +210,8 @@ int main (int argc, char **argv) try
             
             String fn;
             //fn.Printf("%s_%04d", TheFileKey, dom.idx_out);
-			fn.Printf("%s_%d_%d_%g",TheFileKey,my_dat.bbtype,nx,dom.Tau);
-            dom.WriteXDMF(fn.CStr());
+			// fn.Printf("%s_%d_%d_%g",TheFileKey,my_dat.bbtype,nx,dom.Tau);
+            // dom.WriteXDMF(fn.CStr());
             dom.idx_out++;
             // std::cout<<"--- Time = "<<dom.Time<<" ---"<<std::endl;
             Report(dom,&my_dat); 
