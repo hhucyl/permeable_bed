@@ -28,8 +28,6 @@
 
 # Executables
 *.exe
-*.out
-*.app
 *.h5
 *.xmf
 
