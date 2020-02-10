@@ -10,11 +10,11 @@ do
     # for h in '10' '30' '50' '70' '90' '110'
     # do
         
-       ./test_spheres_bb 0 90 $tau 12
-       ./test_spheres_bb 1 90 $tau 12
-       ./test_spheres_bb 2 90 $tau 12
-       ./test_spheres_bb 3 90 $tau 12
-       ./test_spheres_bb 4 90 $tau 12
+       ./test_spheres_bb 0 90 $tau 12 >> log.txt 2>&1
+       ./test_spheres_bb 1 90 $tau 12 >> log.txt 2>&1
+       ./test_spheres_bb 2 90 $tau 12 >> log.txt 2>&1
+       ./test_spheres_bb 3 90 $tau 12 >> log.txt 2>&1
+       ./test_spheres_bb 4 90 $tau 12 >> log.txt 2>&1
         
     # done
 done

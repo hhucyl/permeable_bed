@@ -1,0 +1,420 @@
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.420052s  CPU 0.424000s  (12:26:36 => 12:26:36)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 2 ---
+--- MRT ---
+--- SBB ---
+[01;34m---Elapsed Time = 1784.824524 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.292427s  CPU 0.292000s  (12:29:27 => 12:29:28)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 2 ---
+--- MRT ---
+--- LIBB ---
+[01;34m---Elapsed Time = 1395.121909 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.289968s  CPU 0.292000s  (12:31:45 => 12:31:45)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 2 ---
+--- MRT ---
+--- QIBB ---
+[01;34m---Elapsed Time = 10286.792074 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.315137s  CPU 0.316000s  (12:49:06 => 12:49:06)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 2 ---
+--- MRT ---
+--- MR ---
+[01;34m---Elapsed Time = 1598.212903 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.294856s  CPU 0.296000s  (12:51:48 => 12:51:49)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 2 ---
+--- MRT ---
+--- CLI ---
+[01;34m---Elapsed Time = 1482.904175 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.291584s  CPU 0.292000s  (12:54:14 => 12:54:14)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.8 ---
+--- MRT ---
+--- SBB ---
+[01;34m---Elapsed Time = 1648.738303 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.289663s  CPU 0.288000s  (12:56:53 => 12:56:54)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.8 ---
+--- MRT ---
+--- LIBB ---
+[01;34m---Elapsed Time = 1157.394537 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.288806s  CPU 0.288000s  (12:58:47 => 12:58:47)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.8 ---
+--- MRT ---
+--- QIBB ---
+[01;34m---Elapsed Time = 1180.450324 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.299913s  CPU 0.300000s  (13:00:42 => 13:00:42)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.8 ---
+--- MRT ---
+--- MR ---
+[01;34m---Elapsed Time = 1295.787623 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.289313s  CPU 0.292000s  (13:02:49 => 13:02:49)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.8 ---
+--- MRT ---
+--- CLI ---
+[01;34m---Elapsed Time = 1356.734897 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.299410s  CPU 0.300000s  (13:04:59 => 13:05:00)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.6 ---
+--- MRT ---
+--- SBB ---
+[01;34m---Elapsed Time = 1367.684772 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.287931s  CPU 0.288000s  (13:07:10 => 13:07:10)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.6 ---
+--- MRT ---
+--- LIBB ---
+[01;34m---Elapsed Time = 1033.473926 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.292925s  CPU 0.296000s  (13:08:50 => 13:08:50)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.6 ---
+--- MRT ---
+--- QIBB ---
+[01;34m---Elapsed Time = 1060.223794 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.291885s  CPU 0.292000s  (13:10:33 => 13:10:33)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.6 ---
+--- MRT ---
+--- MR ---
+[01;34m---Elapsed Time = 1169.133135 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.299616s  CPU 0.296000s  (13:12:27 => 13:12:27)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.6 ---
+--- MRT ---
+--- CLI ---
+[01;34m---Elapsed Time = 1130.803834 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.294022s  CPU 0.292000s  (13:14:16 => 13:14:17)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.4 ---
+--- MRT ---
+--- SBB ---
+[01;34m---Elapsed Time = 1234.557239 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.293839s  CPU 0.292000s  (13:16:15 => 13:16:15)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.4 ---
+--- MRT ---
+--- LIBB ---
+[01;34m---Elapsed Time = 918.402250 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.290885s  CPU 0.292000s  (13:17:44 => 13:17:44)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.4 ---
+--- MRT ---
+--- QIBB ---
+[01;34m---Elapsed Time = 947.584315 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.300727s  CPU 0.300000s  (13:19:16 => 13:19:16)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.4 ---
+--- MRT ---
+--- MR ---
+[01;34m---Elapsed Time = 943.387699 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.292897s  CPU 0.296000s  (13:20:50 => 13:20:50)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.4 ---
+--- MRT ---
+--- CLI ---
+[01;34m---Elapsed Time = 1020.118590 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.290946s  CPU 0.292000s  (13:22:29 => 13:22:29)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.2 ---
+--- MRT ---
+--- SBB ---
+[01;34m---Elapsed Time = 1101.579837 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.290490s  CPU 0.292000s  (13:24:15 => 13:24:16)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.2 ---
+--- MRT ---
+--- LIBB ---
+[01;34m---Elapsed Time = 688.705101 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.292357s  CPU 0.292000s  (13:25:22 => 13:25:23)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.2 ---
+--- MRT ---
+--- QIBB ---
+[01;34m---Elapsed Time = 706.639363 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.299024s  CPU 0.300000s  (13:26:31 => 13:26:31)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.2 ---
+--- MRT ---
+--- MR ---
+[01;34m---Elapsed Time = 703.905106 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.291948s  CPU 0.292000s  (13:27:40 => 13:27:40)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1.2 ---
+--- MRT ---
+--- CLI ---
+[01;34m---Elapsed Time = 914.419407 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.291344s  CPU 0.292000s  (13:29:10 => 13:29:10)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1 ---
+--- MRT ---
+--- SBB ---
+[01;34m---Elapsed Time = 1235.137698 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.291926s  CPU 0.292000s  (13:31:09 => 13:31:09)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1 ---
+--- MRT ---
+--- LIBB ---
+[01;34m---Elapsed Time = 1032.539037 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.295613s  CPU 0.296000s  (13:32:48 => 13:32:49)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1 ---
+--- MRT ---
+--- QIBB ---
+[01;34m---Elapsed Time = 1061.080456 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.290527s  CPU 0.292000s  (13:34:32 => 13:34:32)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1 ---
+--- MRT ---
+--- MR ---
+[01;34m---Elapsed Time = 1046.677372 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.291715s  CPU 0.292000s  (13:36:13 => 13:36:13)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 1 ---
+--- MRT ---
+--- CLI ---
+[01;34m---Elapsed Time = 1018.053640 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.292396s  CPU 0.292000s  (13:37:51 => 13:37:51)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- MRT ---
+--- SBB ---
+[01;34m---Elapsed Time = 2054.050769 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.297084s  CPU 0.296000s  (13:41:07 => 13:41:07)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- MRT ---
+--- LIBB ---
+[01;34m---Elapsed Time = 1742.398801 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.294914s  CPU 0.296000s  (13:43:59 => 13:43:59)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- MRT ---
+--- QIBB ---
+[01;34m---Elapsed Time = 1761.473262 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.297775s  CPU 0.296000s  (13:46:48 => 13:46:49)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- MRT ---
+--- MR ---
+[01;34m---Elapsed Time = 1745.504806 s---[0m
+
+[1;33m--- Initializing LBM Domain --------------------------------------------[0m
+[1;37m  Num of cells   = 729000[0m
+[1;34m  Elapsed time       = 0.289081s  CPU 0.288000s  (13:49:37 => 13:49:37)[0m
+size 90 R 13.1217 Num 50
+my_dat.R 13.1217
+Read Finish
+[01;33m--- Solving ---[0m
+--- Tau = 0.8 ---
+--- MRT ---
+--- CLI ---
+[01;34m---Elapsed Time = 1696.396969 s---[0m
