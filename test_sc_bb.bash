@@ -29,9 +29,9 @@ for tau  in '1.6'
 do
     for h in '10' '30' '50' '70' '90' '110'
     do
-        ./test_sc_bb 0 $h $tau 12 >> log.txt 2>&1
-        ./test_sc_bb 1 $h $tau 12 >> log.txt 2>&1
-        ./test_sc_bb 2 $h $tau 12 >> log.txt 2>&1
+#        ./test_sc_bb 0 $h $tau 12 >> log.txt 2>&1
+#        ./test_sc_bb 1 $h $tau 12 >> log.txt 2>&1
+#        ./test_sc_bb 2 $h $tau 12 >> log.txt 2>&1
         ./test_sc_bb 3 $h $tau 12 >> log.txt 2>&1
         ./test_sc_bb 4 $h $tau 12 >> log.txt 2>&1
         # ./test_sc_ga -1 $h $tau 12
