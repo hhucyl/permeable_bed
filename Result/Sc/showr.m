@@ -1,7 +1,7 @@
 clear
 clc
-data = xlsread('Sum_r.xlsx','Sheet2');
-data1 = xlsread('Sum_r.xlsx','Sheet3');
+data = xlsread('Sum_r1.1.xlsx','Sheet2');
+data1 = xlsread('Sum_r1.1.xlsx','Sheet3');
 N = data(2:end,1);
 Data = [data(2:end,2:end),data1(2:end,7:end)];
 temp = Data
@@ -22,11 +22,12 @@ legend_str = {'SBB-MRT','LIBB-MRT','QIBB-MRT','MR-MRT',...
     };
 legend(legend_str,'location','northeast');
 legend boxoff
-grid on
+% grid on
+set(gca,'xtick',[10,30,50,70,90,110])
 axis([min(N) max(N) 0.8 2])
 xlabel('\itN')
 ylabel('\itk^{*}_{\rmsimulated}/k^{*}_{\rmanalytical}')
-picture(20)
+picture(15)
 subplot(3,3,2)
 yy = [];
 for i=1:5
@@ -38,14 +39,15 @@ for i=1:5
     h1(i,1) = loglog(x,y,char(marker(i)),'markersize',mt);
     hold on
 end
-grid on
+% grid on
 a = max(max(yy))/min(N)^-1;
 a = a/0.2;
 xxx = min(N):1:max(N);
 yyy = a.*xxx.^-1;
 ymax = max(yyy);
 plot(xxx,yyy,'r--','linewidth',2)
-grid on
+% grid on
+set(gca,'xtick',[10,30,50,70,90,110])
 a = min(min(yy))/min(N)^-2;
 a = a/0.03;
 xxx = min(N):1:max(N);
@@ -55,7 +57,7 @@ plot(xxx,yyy,'m--','linewidth',2)
 axis([min(N) max(N) ymin ymax])
 xlabel('\itN')
 ylabel('$|\frac{k^{*}_{\rm simulated}}{k^{*}_{\rm analytical}}-1|$','interpreter','latex')
-picture(20)
+picture(15)
 subplot(3,3,5)
 num = [6,7,10,11];
 yy = [];
@@ -66,14 +68,15 @@ for i=1:numel(num)
     loglog(x,y,char(marker(num(i))),'markersize',markersize);
     hold on
 end
-grid on
+% grid on
 a = max(max(yy))/min(N)^-1;
 a = a/0.2;
 xxx = min(N):1:max(N);
 yyy = a.*xxx.^-1;
 ymax = max(yyy);
 plot(xxx,yyy,'r--','linewidth',2)
-grid on
+% grid on
+set(gca,'xtick',[10,30,50,70,90,110])
 a = min(min(yy))/min(N)^-2;
 a = a/0.03;
 xxx = min(N):1:max(N);
@@ -84,7 +87,7 @@ axis([min(N) max(N) ymin ymax])
 % axis([0.5 2 0.7 1.3])
 xlabel('\itN')
 ylabel('$|\frac{k^{*}_{\rm simulated}}{k^{*}_{\rm analytical}}-1|$','interpreter','latex')
-picture(20)
+picture(15)
 subplot(3,3,8)
 num = [8,9,12,13];
 yy = [];
@@ -95,14 +98,14 @@ for i=1:numel(num)
     loglog(x,y,char(marker(num(i))),'markersize',markersize)
     hold on
 end
-grid on
+% grid on
 a = max(max(yy))/min(N)^-1;
 a = a/0.2;
 xxx = min(N):1:max(N);
 yyy = a.*xxx.^-1;
 ymax = max(yyy);
 plot(xxx,yyy,'r--','linewidth',2)
-grid on
+% grid on
 a = min(min(yy))/min(N)^-2;
 a = a/0.03;
 xxx = min(N):1:max(N);
@@ -110,9 +113,10 @@ yyy = a.*xxx.^-2;
 ymin = min(yyy);
 plot(xxx,yyy,'m--','linewidth',2)
 axis([min(N) max(N) ymin ymax])
+set(gca,'xtick',[10,30,50,70,90,110])
 xlabel('\itN')
 ylabel('$|\frac{k^{*}_{\rm simulated}}{k^{*}_{\rm analytical}}-1|$','interpreter','latex')
-picture(20)
+picture(15)
 subplot(3,3,[3 6 9])
 for i = 1:sD(2)
     x = N;
@@ -123,9 +127,10 @@ for i = 1:sD(2)
 end
 xlim([min(N),max(N)])
 ylim([1e-5,1])
-legend(legend_str,'location','southwest');
-legend boxoff
+% legend(legend_str,'location','southwest');
+% legend boxoff
 xlabel('\itN')
 ylabel('$|\frac{k^{*}_{\rm simulated}}{k^{*}_{\rm analytical}}-1|$','interpreter','latex')
-grid on
-picture(20)
+set(gca,'xtick',[10,30,50,70,90,110])
+% grid on
+picture(15)

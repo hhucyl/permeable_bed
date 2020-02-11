@@ -24,7 +24,7 @@ inline void Domain::CalcProps()
                 Vel[ix][iy][iz] +=  F[ix][iy][iz][k]*C[k];
             }
             Vel[ix][iy][iz] *= Cs/Rho[ix][iy][iz];
-//Vel[ix][iy][iz] += 0.5*dt*BForce[ix][iy][iz];
+			Vel[ix][iy][iz] += 0.5*dt*BForce[ix][iy][iz];
         }
     }
 }
